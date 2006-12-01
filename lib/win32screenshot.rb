@@ -17,6 +17,7 @@ module Win32
     typealias "LPRECT","unsigned int*"
 
     extern "HWND GetForegroundWindow()"
+    extern "HWND GetDesktopWindow()"
     extern "BOOL GetWindowRect(HWND, LPRECT)"
     extern "BOOL GetClientRect(HWND, LPRECT)"
     extern "HDC GetDC(HWND)"
@@ -83,5 +84,11 @@ module Win32
     def foreground
       capture(getForegroundWindow())
     end
+
+    module_function
+    def desktop
+      capture(getDesktopWindow())
+    end
+    
   end
 end

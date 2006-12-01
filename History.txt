@@ -1,0 +1,6 @@
+= 0.0.2 (trunk)
+* Added desktop method (patch from Ryan Schuft)
+* Added HTTP server example (patch from Ryan Schuft)
+
+= 0.0.1 2006-11-29
+* First release
