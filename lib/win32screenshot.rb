@@ -9,6 +9,11 @@ module Win32
 
     dlload "kernel32.dll","user32.dll","gdi32.dll"
 
+    USER32 = DL.dlopen("user32")
+    EnumWindows = USER32['EnumWindows', 'IPL']
+    GetWindowTextLength = USER32['GetWindowTextLengthA' ,'LI' ]
+    GetWindowText = USER32['GetWindowTextA', 'iLsL' ] 
+
     SRCCOPY = 0xCC0020
     GMEM_FIXED = 0
     DIB_RGB_COLORS = 0
@@ -35,15 +40,10 @@ module Win32
     extern "long DeleteObject(unsigned long)"
     extern "long DeleteDC(HDC)"
     extern "long ReleaseDC(long, HDC)"
+    extern "BOOL SetForegroundWindow(HWND)"
 
     module_function
-    def capture(hwnd)
-      hScreenDC = getDC(hwnd)
-
-      # Find the dimensions of the window
-      rect = DL.malloc(DL.sizeof('LLLL'))
-      getClientRect(hwnd, rect)
-      x1, y1, x2, y2 = rect.to_a('LLLL')
+    def capture(hScreenDC, x1, y1, x2, y2)
       w = x2-x1
       h = y2-y1
 
@@ -79,16 +79,52 @@ module Win32
  
       return [w, h, data]
     end
+
+    def capture_hwnd(hwnd)
+      hScreenDC = getDC(hwnd)
+
+      # Find the dimensions of the window
+      rect = DL.malloc(DL.sizeof('LLLL'))
+      getClientRect(hwnd, rect)
+      x1, y1, x2, y2 = rect.to_a('LLLL')
+
+      capture(hScreenDC, x1, y1, x2, y2)
+    end
   
     module_function
     def foreground
-      capture(getForegroundWindow())
+      hwnd = getForegroundWindow
+      capture_hwnd(hwnd)
     end
 
     module_function
     def desktop
-      capture(getDesktopWindow())
+      hwnd = getDesktopWindow
+      capture_hwnd(hwnd)
     end
-    
+
+    module_function
+    def window(title_query, delay=0.1)
+      hwnd = nil
+
+      proc = DL.callback('ILL') do |curr_hwnd, lparam|
+        textLength, a = GetWindowTextLength.call(curr_hwnd)
+        captionBuffer = " " * (textLength+1)
+        t, textCaption = GetWindowText.call(curr_hwnd, captionBuffer, textLength+1)    
+        text = textCaption[1].to_s
+        if text =~ title_query
+          hwnd = curr_hwnd
+          0
+        else
+          1
+        end
+      end
+      EnumWindows.call(proc, 0)
+
+      raise "Couldn't find window with title matching #{title_query}" if hwnd.nil?
+      setForegroundWindow(hwnd)
+      sleep(delay)
+      capture_hwnd(hwnd)
+    end
   end
 end

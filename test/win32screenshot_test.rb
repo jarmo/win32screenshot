@@ -13,7 +13,7 @@ class Win32screenshotTest < Test::Unit::TestCase
     width, height, bmp = Win32::Screenshot.foreground
     assert_equal 1280, width
     assert_equal 720,  height
-    assert_image(bmp, "fg.png")
+    assert_image(bmp)
   end
   
   def test_should_capture_desktop
@@ -23,10 +23,10 @@ class Win32screenshotTest < Test::Unit::TestCase
     assert_image(bmp)
   end
 
-  def Xtest_should_capture_window_by_title
+  def test_should_capture_window_by_title
     width, height, bmp = Win32::Screenshot.window(/Firefox/)
-#    assert_equal 1600, width
-#    assert_equal 1147,  height
+    assert_equal 1600, width
+    assert_equal 1147,  height
     assert_image(bmp, "ff.png")
   end
   
