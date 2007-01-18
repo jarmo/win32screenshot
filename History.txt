@@ -1,4 +1,8 @@
-= 0.0.2 (trunk)
+= 0.0.3 2007-01-18
+* Fixed bug with too many callbacks
+* Added get_hwnd(Regexp)
+
+= 0.0.2 2006-12-02 
 * Added desktop method (patch from Ryan Schuft)
 * Added HTTP server example (patch from Ryan Schuft)
 * Added window(regexp) method
