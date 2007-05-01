@@ -1,2 +1,3 @@
 require 'test/unit'
-require File.dirname(__FILE__) + '/../lib/win32screenshot'
+$LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
+require 'win32/screenshot'
