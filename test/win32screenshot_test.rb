@@ -58,12 +58,4 @@ class Win32screenshotTest < Test::Unit::TestCase
     assert_equal "\211PNG", png[0..3]
     File.open("#{file}.png", "wb") {|io| io.write(png)} unless file.nil?
   end
-
-  def test_should_have_version
-    assert_equal '0.0.4', Win32::Screenshot::VERSION::STRING
-  end
-
-  def test_sleep_to_verify_that_segfault_happens_at_exit_not_during_work
-#    sleep 10
-  end
 end
