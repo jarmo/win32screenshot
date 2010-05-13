@@ -1,8 +1,0 @@
-History.txt
-Manifest.txt
-README.txt
-Rakefile
-lib/win32screenshot.rb
-lib/win32screenshot/version.rb
-test/test_helper.rb
-test/win32screenshot_test.rb

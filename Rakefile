@@ -1,50 +1,45 @@
 require 'rubygems'
 require 'rake'
-require 'rake/clean'
-require 'rake/testtask'
-require 'rake/packagetask'
-require 'rake/gempackagetask'
-require 'rake/rdoctask'
-require 'rake/contrib/rubyforgepublisher'
-require 'fileutils'
-require 'hoe'
-include FileUtils
-require File.join(File.dirname(__FILE__), 'lib', 'win32screenshot', 'version')
 
-AUTHOR = "Aslak Hellesøy"
-EMAIL = "aslak.hellesoy@gmail.com"
-DESCRIPTION = "Capture Screenshots on Windows with Ruby"
-GEM_NAME = "win32screenshot"
-RUBYFORGE_PROJECT = "win32screenshot"
-HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
-RELEASE_TYPES = %w( gem ) # can use: gem, tar, zip
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "win32screenshot"
+    gem.summary = %Q{Capture Screenshots on Windows with Ruby}
+    gem.description = %Q{Capture Screenshots on Windows with Ruby}
+    gem.email = ["jarmo.p@gmail.com", "aslak.hellesoy@gmail.com"]
+    gem.homepage = "http://github.com/jarmo/win32screenshot"
+    gem.authors = ["Jarmo Pertman", "Aslak HellesÃ¸y"]
 
-
-NAME = "win32screenshot"
-REV = nil # UNCOMMENT IF REQUIRED: File.read(".svn/entries")[/committed-rev="(d+)"/, 1] rescue nil
-VERS = ENV['VERSION'] || (Win32screenshot::VERSION::STRING + (REV ? ".#{REV}" : ""))
-CLEAN.include ['**/.*.sw?', '*.gem', '.config']
-RDOC_OPTS = ['--quiet', '--title', "win32screenshot documentation",
-    "--opname", "index.html",
-    "--line-numbers", 
-    "--main", "README",
-    "--inline-source"]
-
-# Generate all the Rake tasks
-# Run 'rake -T' to see list of generated tasks (from gem root directory)
-hoe = Hoe.new(GEM_NAME, VERS) do |p|
-  p.author = AUTHOR 
-  p.description = DESCRIPTION
-  p.email = EMAIL
-  p.summary = DESCRIPTION
-  p.url = HOMEPATH
-  p.rubyforge_name = RUBYFORGE_PROJECT if RUBYFORGE_PROJECT
-  p.test_globs = ["test/**/*_test.rb"]
-  p.clean_globs = CLEAN  #An array of file patterns to delete on clean.
-  
-  # == Optional
-  #p.changes        - A description of the release's latest changes.
-  #p.extra_deps     - An array of rubygem dependencies.
-  #p.spec_extras    - A hash of extra values to set in the gemspec.
+    gem.add_development_dependency "rspec", ">= 1.2.9"
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
-          
+
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.spec_files = FileList['spec/**/*_spec.rb']
+end
+
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
+end
+
+task :spec => :check_dependencies
+
+task :default => :spec
+
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "win32screenshot #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
+end
