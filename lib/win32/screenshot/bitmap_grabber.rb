@@ -5,19 +5,19 @@ module Win32
     module BitmapGrabber
       extend DL::Importable
 
-      dlload "kernel32.dll","user32.dll","gdi32.dll"
+      dlload "kernel32.dll", "user32.dll", "gdi32.dll"
 
       USER32 = DL.dlopen("user32")
       EnumWindows = USER32['EnumWindows', 'IPL']
-      GetWindowTextLength = USER32['GetWindowTextLengthA' ,'LI' ]
-      GetWindowText = USER32['GetWindowTextA', 'iLsL' ] 
+      GetWindowTextLength = USER32['GetWindowTextLengthA', 'LI' ]
+      GetWindowText = USER32['GetWindowTextA', 'iLsL' ]
 
       SRCCOPY = 0xCC0020
       GMEM_FIXED = 0
       DIB_RGB_COLORS = 0
 
-      typealias "HBITMAP","unsigned int"
-      typealias "LPRECT","unsigned int*"
+      typealias "HBITMAP", "unsigned int"
+      typealias "LPRECT", "unsigned int*"
 
       extern "HWND GetForegroundWindow()"
       extern "HWND GetDesktopWindow()"
@@ -44,7 +44,7 @@ module Win32
       FIND_WINDOW_CALLBACK = DL.callback('ILL') do |curr_hwnd, p|
         textLength, a = GetWindowTextLength.call(curr_hwnd)
         captionBuffer = " " * (textLength+1)
-        t, textCaption = GetWindowText.call(curr_hwnd, captionBuffer, textLength+1)    
+        t, textCaption = GetWindowText.call(curr_hwnd, captionBuffer, textLength+1)
         text = textCaption[1].to_s
         # TODO: this is very ugly. How do we pass title query as a param to this block?
         if text =~ $win32screenshot_title_query
@@ -78,7 +78,7 @@ module Win32
         hmemBM = createCompatibleBitmap(hScreenDC, w, h)
         selectObject(hmemDC, hmemBM)
         bitBlt(hmemDC, 0, 0, w, h, hScreenDC, 0, 0, SRCCOPY)
-        hpxldata = globalAlloc(GMEM_FIXED, w * h * 3)
+        hpxldata = globalAlloc(GMEM_FIXED, w * h * 3 + w % 4 * h)
         lpvpxldata = globalLock(hpxldata)
 
         # Bitmap header
@@ -88,14 +88,14 @@ module Win32
         getDIBits(hmemDC, hmemBM, 0, h, lpvpxldata, bmInfo, DIB_RGB_COLORS)
 
         bmFileHeader = [
-          19778, 
-          (w * h * 3) + 40 + 14,
-          0, 
-          0, 
-          54
+                19778,
+                w * h * 3 + w % 4 * h + 40 + 14,
+                0,
+                0,
+                54
         ].pack('SLSSL').to_ptr
 
-        bmp_data = bmFileHeader.to_s(14) + bmInfo.to_s(40) + lpvpxldata.to_s(w * h * 3)
+        bmp_data = bmFileHeader.to_s(14) + bmInfo.to_s(40) + lpvpxldata.to_s(w * h * 3 + w % 4 *h)
         proc.call(w, h, bmp_data)
 
         globalUnlock(hpxldata)
@@ -107,13 +107,19 @@ module Win32
       end
 
       module_function
+      def dimensions_for(hwnd)
+        rect = DL.malloc(DL.sizeof('LLLL'))
+        getClientRect(hwnd, rect)
+        x1, y1, x2, y2 = rect.to_a('LLLL')
+        return x1, x2, y1, y2
+      end
+
+      module_function
       def capture_hwnd(hwnd, &proc)
         hScreenDC = getDC(hwnd)
 
         # Find the dimensions of the window
-        rect = DL.malloc(DL.sizeof('LLLL'))
-        getClientRect(hwnd, rect)
-        x1, y1, x2, y2 = rect.to_a('LLLL')
+        x1, x2, y1, y2 = dimensions_for(hwnd)
 
         capture(hScreenDC, x1, y1, x2, y2, &proc)
       end
