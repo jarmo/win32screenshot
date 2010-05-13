@@ -1,4 +1,4 @@
-= win32-uus
+= win32screenshot
 
 Description goes here.
 

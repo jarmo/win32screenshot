@@ -1,5 +1,4 @@
 require 'win32/screenshot/bitmap_grabber'
-require 'win32/screenshot/version'
 
 module Win32
   class Screenshot  
