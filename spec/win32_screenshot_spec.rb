@@ -55,8 +55,8 @@ describe "win32-screenshot" do
 
   it "captures small windows" do
     # TODO resize window programmatically
-    Win32::Screenshot.window(/Notepad/) do |width, height, bmp_data|
-      check_image(bmp_data, 'notepad')
+    Win32::Screenshot.window(/Notepad/) do |width, height, bmp|
+      check_image(bmp)
     end
   end
 
