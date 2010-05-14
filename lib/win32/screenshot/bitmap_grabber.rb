@@ -12,7 +12,7 @@ module Win32
         title_buffer = GetWindowTextLength.call(handle) + 1
         title = "\0" * title_buffer
         GetWindowText.call(handle, title, title_buffer)
-        if title =~ Regexp.new(param)
+        if title =~ @title_matcher ||= Regexp.new(param)
           @@hwnd = handle
           false
         else
