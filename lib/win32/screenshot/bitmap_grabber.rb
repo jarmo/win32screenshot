@@ -37,7 +37,7 @@ module Win32
       GetDesktopWindow = Win32::API.new('GetDesktopWindow', [], 'L', 'user32')
 
       def getDesktopWindow
-        GetForegroundWindow.call
+        GetDesktopWindow.call
       end
 
       # Ruby::DL
