@@ -11,6 +11,8 @@ begin
     gem.homepage = "http://github.com/jarmo/win32screenshot"
     gem.authors = ["Jarmo Pertman", "Aslak Hellesøy"]
 
+    gem.add_dependency "win32-api"
+
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency "win32-process"
     gem.add_development_dependency "win32-dir"
