@@ -6,7 +6,7 @@ describe "win32-screenshot" do
     @notepad = IO.popen("notepad").pid
     @iexplore = IO.popen(File.join(Dir::PROGRAM_FILES, "Internet Explorer", "iexplore")).pid
     # TODO check if programs are opened
-    sleep 10
+    sleep 5
   end
 
   it "captures foreground" do

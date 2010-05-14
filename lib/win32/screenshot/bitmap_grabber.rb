@@ -28,11 +28,23 @@ module Win32
         @@hwnd
       end
 
+      GetForegroundWindow = Win32::API.new('GetForegroundWindow', [], 'L', 'user32')
+
+      def getForegroundWindow
+        GetForegroundWindow.call
+      end
+
+      GetDesktopWindow = Win32::API.new('GetDesktopWindow', [], 'L', 'user32')
+
+      def getDesktopWindow
+        GetForegroundWindow.call
+      end
+
+      # Ruby::DL
       extend DL::Importable
 
       dlload "kernel32.dll", "user32.dll", "gdi32.dll"
-      
-      # Ruby::DL
+
       SRCCOPY = 0xCC0020
       GMEM_FIXED = 0
       DIB_RGB_COLORS = 0
@@ -40,8 +52,6 @@ module Win32
       typealias "HBITMAP", "unsigned int"
       typealias "LPRECT", "unsigned int*"
 
-      extern "HWND GetForegroundWindow()"
-      extern "HWND GetDesktopWindow()"
       extern "BOOL GetWindowRect(HWND, LPRECT)"
       extern "BOOL GetClientRect(HWND, LPRECT)"
       extern "HDC GetDC(HWND)"
