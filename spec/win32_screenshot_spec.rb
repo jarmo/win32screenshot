@@ -31,14 +31,12 @@ describe "win32-screenshot" do
 
   it "captures maximized window by window title" do
     # TODO maximize window programmatically
-    pending "not yet possible" do
-      Win32::Screenshot.window("Internet Explorer") do |width, height, bmp|
-        hwnd = Win32::Screenshot.set_foreground_window("Internet Explorer")
-        dimensions = Win32::Screenshot::BitmapGrabber.dimensions_for(hwnd)
-        width.should == dimensions[1]
-        height.should == dimensions[3]
-        check_image(bmp)
-      end
+    Win32::Screenshot.window("Internet Explorer") do |width, height, bmp|
+      hwnd = Win32::Screenshot.set_foreground_window("Internet Explorer")
+      dimensions = Win32::Screenshot::BitmapGrabber.dimensions_for(hwnd)
+      width.should == dimensions[1]
+      height.should == dimensions[3]
+      check_image(bmp)
     end
   end
 
