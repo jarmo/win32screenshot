@@ -2,3 +2,5 @@ coverage
 rdoc
 pkg
 .idea
+*.bmp
+*.png
