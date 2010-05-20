@@ -50,38 +50,25 @@ module Win32
         @@hwnd
       end
 
-      def prepare_window(hwnd)
+      def prepare_window(hwnd, pause)
         restore(hwnd) if IsIconic(hwnd)
         set_foreground(hwnd)
+        ShowWindow(hwnd, SW_SHOW)
+        sleep pause
       end
 
       def restore(hwnd)
         ShowWindow(hwnd, SW_RESTORE)
-        sleep 0.5
       end
 
       def set_foreground(hwnd)
-        # trying multiple solutions to set
-        # window to the foreground
         if GetForegroundWindow() != hwnd
+          foreground_thread = GetWindowThreadProcessId(GetCurrentThreadId(), nil)
           other_thread = GetWindowThreadProcessId(hwnd, nil)
-          current_thread = GetWindowThreadProcessId(GetCurrentThreadId(), nil)
-          AttachThreadInput(current_thread, other_thread, true)
+          AttachThreadInput(foreground_thread, other_thread, true)
           SetForegroundWindow(hwnd)
           SetFocus(hwnd)
-          AttachThreadInput(current_thread, other_thread, false)
-          sleep 0.1
-        end
-
-        if GetForegroundWindow() != hwnd
-          SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)
-          SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE)
-          sleep 0.1
-        end
-
-        if GetForegroundWindow() != hwnd
-          SwitchToThisWindow(hwnd, false)
-          sleep 0.1
+          AttachThreadInput(foreground_thread, other_thread, false)
         end
       end
 

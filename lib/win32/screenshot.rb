@@ -15,10 +15,10 @@ module Win32
         capture_hwnd(hwnd, &proc)
       end
 
-      def window(title_query, &proc)
+      def window(title_query, pause=0.1, &proc)
         hwnd = get_hwnd(title_query)
         raise "window with title '#{title_query}' was not found!" unless hwnd
-        prepare_window(hwnd)
+        prepare_window(hwnd, pause)
         capture_hwnd(hwnd, &proc)
       end
     end
