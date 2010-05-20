@@ -3,6 +3,7 @@ require 'windows/gdi/device_context'
 require 'windows/gdi/bitmap'
 require 'windows/memory'
 require 'windows/msvcrt/buffer'
+require 'windows/thread'
 
 module Win32
   class Screenshot
@@ -11,6 +12,7 @@ module Win32
       include Windows::GDI::DeviceContext
       include Windows::GDI::Bitmap
       include Windows::Memory
+      include Windows::Thread
       include Windows::MSVCRT::Buffer
 
       Windows::API.auto_namespace = self.to_s
@@ -19,6 +21,10 @@ module Win32
       Windows::API.new('IsWindowVisible', 'L', 'B', 'user32')
       Windows::API.new('IsIconic', 'L', 'B', 'user32')
       Windows::API.new('ShowWindow', 'LI', 'B', 'user32')
+      Windows::API.new('SetForegroundWindow', 'L', 'B', 'user32')
+      Windows::API.new('SetFocus', 'L', 'B', 'user32')
+      Windows::API.new('SetWindowPos', 'LLIIIII', 'B', 'user32')
+      Windows::API.new('SwitchToThisWindow', 'LB', 'V', 'user32')
 
       EnumWindowsProc = Win32::API::Callback.new('LP', 'I') do |hwnd, param|
         title_buffer = Win32::Screenshot::GetWindowTextLength(hwnd) + 1
@@ -32,6 +38,12 @@ module Win32
         end
       end
 
+      HWND_TOPMOST = -1
+      HWND_NOTOPMOST = -2
+      SWP_NOSIZE = 1
+      SWP_NOMOVE = 2
+      SWP_SHOWWINDOW = 40
+
       def get_hwnd(window_title)
         @@hwnd = nil
         EnumWindows(EnumWindowsProc, window_title.to_s)
@@ -39,10 +51,50 @@ module Win32
       end
 
       def prepare_window(hwnd)
-        if IsIconic(hwnd)
-          ShowWindow(hwnd, SW_RESTORE)
+        restore(hwnd) if IsIconic(hwnd)
+        set_foreground(hwnd)
+      end
+
+      def restore(hwnd)
+        ShowWindow(hwnd, SW_RESTORE)
+        sleep 0.5
+      end
+
+      def set_foreground(hwnd)
+        # trying multiple solutions to set
+        # window to the foreground
+        if GetForegroundWindow() != hwnd
+          other_thread = GetWindowThreadProcessId(hwnd, nil)
+          current_thread = GetWindowThreadProcessId(GetCurrentThreadId(), nil)
+          AttachThreadInput(current_thread, other_thread, true)
+          SetForegroundWindow(hwnd)
+          SetFocus(hwnd)
+          AttachThreadInput(current_thread, other_thread, false)
           sleep 0.1
         end
+
+        if GetForegroundWindow() != hwnd
+          SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)
+          SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE)
+          sleep 0.1
+        end
+
+        if GetForegroundWindow() != hwnd
+          SwitchToThisWindow(hwnd, false)
+          sleep 0.1
+        end
+      end
+
+      def dimensions_for(hwnd)
+        rect = [0, 0, 0, 0].pack('L4')
+        GetClientRect(hwnd, rect)
+        x1, y1, x2, y2 = rect.unpack('L4')
+      end
+
+      def capture_hwnd(hwnd, &proc)
+        hScreenDC = GetDC(hwnd)
+        x1, y1, x2, y2 = dimensions_for(hwnd)
+        capture(hScreenDC, x1, y1, x2, y2, &proc)
       end
 
       def capture(hScreenDC, x1, y1, x2, y2, &proc)
@@ -82,18 +134,6 @@ module Win32
         DeleteDC(hmemDC)
         ReleaseDC(0, hScreenDC)
         nil
-      end
-
-      def dimensions_for(hwnd)
-        rect = [0, 0, 0, 0].pack('L4')
-        GetClientRect(hwnd, rect)
-        x1, y1, x2, y2 = rect.unpack('L4')
-      end
-
-      def capture_hwnd(hwnd, &proc)
-        hScreenDC = GetDC(hwnd)
-        x1, y1, x2, y2 = dimensions_for(hwnd)
-        capture(hScreenDC, x1, y1, x2, y2, &proc)
       end
     end
   end
