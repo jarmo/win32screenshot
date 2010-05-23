@@ -2,24 +2,26 @@ require 'win32/screenshot/bitmap_grabber'
 
 module Win32
   class Screenshot
-    extend BitmapGrabber
-
     class << self
       def foreground(&proc)
-        hwnd = GetForegroundWindow()
-        capture_hwnd(hwnd, &proc)
+        hwnd = BitmapGrabber.foreground_window
+        BitmapGrabber.capture(hwnd, &proc)
       end
 
       def desktop(&proc)
-        hwnd = GetDesktopWindow()
-        capture_hwnd(hwnd, &proc)
+        hwnd = BitmapGrabber.desktop_window
+        BitmapGrabber.capture(hwnd, &proc)
       end
 
-      def window(title_query, pause=0.1, &proc)
-        hwnd = get_hwnd(title_query)
+      def window(title_query, pause=0.5, &proc)
+        hwnd = BitmapGrabber.hwnd(title_query)
         raise "window with title '#{title_query}' was not found!" unless hwnd
-        prepare_window(hwnd, pause)
-        capture_hwnd(hwnd, &proc)
+        hwnd(hwnd, pause, &proc)
+      end
+
+      def hwnd(hwnd, pause=0.5, &proc)
+        BitmapGrabber.prepare_window(hwnd, pause)
+        BitmapGrabber.capture(hwnd, &proc)
       end
     end
 

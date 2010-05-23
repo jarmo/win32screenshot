@@ -18,9 +18,9 @@ module SpecHelper
   end
 
   def wait_for_programs_to_open
-    until Win32::Screenshot.get_hwnd(/Internet Explorer/) &&
-            Win32::Screenshot.get_hwnd(/Notepad/) &&
-            Win32::Screenshot.get_hwnd(/Calculator/)
+    until Win32::Screenshot::BitmapGrabber.hwnd(/Internet Explorer/) &&
+            Win32::Screenshot::BitmapGrabber.hwnd(/Notepad/) &&
+            Win32::Screenshot::BitmapGrabber.hwnd(/Calculator/)
       sleep 0.1
     end
     # just in case of slow PC
@@ -28,22 +28,22 @@ module SpecHelper
   end
 
   def maximize title
-    Win32::Screenshot::ShowWindow(Win32::Screenshot.get_hwnd(title),
-                                  Win32::Screenshot::BitmapGrabber::SW_MAXIMIZE)
+    Win32::Screenshot::BitmapGrabber.show_window(Win32::Screenshot::BitmapGrabber.hwnd(title),
+                                                 Win32::Screenshot::BitmapGrabber::SW_MAXIMIZE)
     sleep 1
   end
 
   def minimize title
-    Win32::Screenshot::ShowWindow(Win32::Screenshot.get_hwnd(title),
-                                  Win32::Screenshot::BitmapGrabber::SW_MINIMIZE)
+    Win32::Screenshot::BitmapGrabber.show_window(Win32::Screenshot::BitmapGrabber.hwnd(title),
+                                                 Win32::Screenshot::BitmapGrabber::SW_MINIMIZE)
     sleep 1
   end
 
   def resize title
-    Win32::Screenshot::SetWindowPos(Win32::Screenshot.get_hwnd(title),
-                                    Win32::Screenshot::BitmapGrabber::HWND_TOPMOST,
-                                    0, 0, 150, 238,
-                                    Win32::Screenshot::BitmapGrabber::SWP_NOMOVE)
+    Win32::Screenshot::BitmapGrabber.set_window_pos(Win32::Screenshot::BitmapGrabber.hwnd(title),
+                                                    Win32::Screenshot::BitmapGrabber::HWND_TOPMOST,
+                                                    0, 0, 150, 238,
+                                                    Win32::Screenshot::BitmapGrabber::SWP_NOMOVE)
     sleep 1
   end
 end

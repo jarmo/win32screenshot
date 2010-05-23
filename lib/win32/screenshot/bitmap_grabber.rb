@@ -1,42 +1,86 @@
-require 'windows/window'
-require 'windows/gdi/device_context'
-require 'windows/gdi/bitmap'
-require 'windows/memory'
-require 'windows/msvcrt/buffer'
-require 'windows/thread'
+require 'ffi'
 
 module Win32
   class Screenshot
     module BitmapGrabber
-      include Windows::Window
-      include Windows::GDI::DeviceContext
-      include Windows::GDI::Bitmap
-      include Windows::Memory
-      include Windows::Thread
-      include Windows::MSVCRT::Buffer
+      extend FFI::Library
 
-      Windows::API.auto_namespace = self.to_s
-      Windows::API.auto_constant  = true
-      Windows::API.auto_method    = true
-      Windows::API.new('IsWindowVisible', 'L', 'B', 'user32')
-      Windows::API.new('IsIconic', 'L', 'B', 'user32')
-      Windows::API.new('ShowWindow', 'LI', 'B', 'user32')
-      Windows::API.new('SetForegroundWindow', 'L', 'B', 'user32')
-      Windows::API.new('SetFocus', 'L', 'B', 'user32')
-      Windows::API.new('SetWindowPos', 'LLIIIII', 'B', 'user32')
-      Windows::API.new('SwitchToThisWindow', 'LB', 'V', 'user32')
+      ffi_lib 'user32', 'kernel32', 'gdi32'
+      ffi_convention :stdcall
 
-      EnumWindowsProc = Win32::API::Callback.new('LP', 'I') do |hwnd, param|
-        title_buffer = Win32::Screenshot::GetWindowTextLength(hwnd) + 1
-        title = "\0" * title_buffer
-        Win32::Screenshot::GetWindowText(hwnd, title, title_buffer)
-        if title =~ Regexp.new(param) && Win32::Screenshot::IsWindowVisible(hwnd)
-          @@hwnd = hwnd
+      callback :enum_callback, [:long, :pointer], :bool
+
+      # user32.dll
+      attach_function :enum_windows, :EnumWindows,
+                      [:enum_callback, :pointer], :long
+      attach_function :window_text, :GetWindowTextA,
+                      [:long, :pointer, :int], :int
+      attach_function :window_text_length, :GetWindowTextLengthA,
+                      [:long], :int
+      attach_function :window_visible, :IsWindowVisible,
+                      [:long], :bool
+      attach_function :dc, :GetDC,
+                      [:long], :long
+      attach_function :client_rect, :GetClientRect,
+                      [:long, :pointer], :bool
+      attach_function :minimized, :IsIconic,
+                      [:long], :bool
+      attach_function :show_window, :ShowWindow,
+                      [:long, :int], :bool
+      attach_function :set_window_pos, :SetWindowPos,
+                      [:long, :long, :int, :int, :int, :int, :int], :bool
+      attach_function :foreground_window, :GetForegroundWindow,
+                      [], :long
+      attach_function :desktop_window, :GetDesktopWindow,
+                      [], :long
+      attach_function :window_thread_process_id, :GetWindowThreadProcessId,
+                      [:long, :pointer], :long
+      attach_function :attach_thread_input, :AttachThreadInput,
+                      [:long, :long, :bool], :bool
+      attach_function :set_foreground_window, :SetForegroundWindow,
+                      [:long], :bool
+      attach_function :set_focus, :SetFocus,
+                      [:long], :bool
+
+      # kernel32.dll
+      attach_function :current_thread_id, :GetCurrentThreadId,
+                      [], :long
+
+      # gdi32.dll
+      attach_function :create_compatible_dc, :CreateCompatibleDC,
+                      [:long], :long
+      attach_function :create_compatible_bitmap, :CreateCompatibleBitmap,
+                      [:long, :int, :int], :long
+      attach_function :select_object, :SelectObject,
+                      [:long, :long], :long
+      attach_function :bit_blt, :BitBlt,
+                      [:long, :int, :int, :int, :int, :long, :int, :int, :long], :bool
+      attach_function :di_bits, :GetDIBits,
+                      [:long, :long, :int, :int, :pointer, :pointer, :int], :int
+      attach_function :delete_object, :DeleteObject,
+                      [:long], :bool
+      attach_function :delete_dc, :DeleteDC,
+                      [:long], :bool
+      attach_function :release_dc, :ReleaseDC,
+                      [:long, :long], :int
+
+      EnumWindowCallback = Proc.new do |hwnd, param|
+        title_length = window_text_length(hwnd) + 1
+        title = FFI::MemoryPointer.new :char, title_length
+        window_text(hwnd, title, title_length)
+        title = title.read_string
+        if title =~ Regexp.new(param.read_string) && window_visible(hwnd)
+          param.write_long hwnd
           false
         else
           true
         end
       end
+
+      SW_SHOW = 5
+      SW_RESTORE = 9
+      SW_MAXIMIZE = 3
+      SW_MINIMIZE = 6
 
       HWND_TOPMOST = -1
       HWND_NOTOPMOST = -2
@@ -44,63 +88,73 @@ module Win32
       SWP_NOMOVE = 2
       SWP_SHOWWINDOW = 40
 
-      def get_hwnd(window_title)
-        @@hwnd = nil
-        EnumWindows(EnumWindowsProc, window_title.to_s)
-        @@hwnd
+      SRCCOPY = 0x00CC0020
+      DIB_RGB_COLORS = 0
+
+      module_function
+
+      def hwnd(window_title)
+        window_title = window_title.to_s
+        window_params = FFI::MemoryPointer.from_string(window_title)
+        enum_windows(EnumWindowCallback, window_params)
+        if window_title != window_params.read_string
+          # hwnd found
+          window_params.read_long
+        else
+          nil
+        end
       end
 
       def prepare_window(hwnd, pause)
-        restore(hwnd) if IsIconic(hwnd)
+        restore(hwnd) if minimized(hwnd)
         set_foreground(hwnd)
-        ShowWindow(hwnd, SW_SHOW)
+        show_window(hwnd, SW_SHOW)
         sleep pause
       end
 
       def restore(hwnd)
-        ShowWindow(hwnd, SW_RESTORE)
+        show_window(hwnd, SW_RESTORE)
       end
 
       def set_foreground(hwnd)
-        if GetForegroundWindow() != hwnd
-          foreground_thread = GetWindowThreadProcessId(GetCurrentThreadId(), nil)
-          other_thread = GetWindowThreadProcessId(hwnd, nil)
-          AttachThreadInput(foreground_thread, other_thread, true)
-          SetForegroundWindow(hwnd)
-          SetFocus(hwnd)
-          AttachThreadInput(foreground_thread, other_thread, false)
+        if foreground_window != hwnd
+          foreground_thread = window_thread_process_id(current_thread_id, nil)
+          other_thread = window_thread_process_id(hwnd, nil)
+          attach_thread_input(foreground_thread, other_thread, true)
+          set_foreground_window(hwnd)
+          set_focus(hwnd)
+          attach_thread_input(foreground_thread, other_thread, false)
         end
       end
 
       def dimensions_for(hwnd)
         rect = [0, 0, 0, 0].pack('L4')
-        GetClientRect(hwnd, rect)
+        client_rect(hwnd, rect)
         x1, y1, x2, y2 = rect.unpack('L4')
       end
 
-      def capture_hwnd(hwnd, &proc)
-        hScreenDC = GetDC(hwnd)
+      def capture(hwnd, &proc)
+        hScreenDC = dc(hwnd)
         x1, y1, x2, y2 = dimensions_for(hwnd)
-        capture(hScreenDC, x1, y1, x2, y2, &proc)
+        __capture(hScreenDC, x1, y1, x2, y2, &proc)
       end
 
-      def capture(hScreenDC, x1, y1, x2, y2, &proc)
+      def __capture(hScreenDC, x1, y1, x2, y2, &proc)
         w = x2-x1
         h = y2-y1
 
         # Reserve some memory
-        hmemDC = CreateCompatibleDC(hScreenDC)
-        hmemBM = CreateCompatibleBitmap(hScreenDC, w, h)
-        SelectObject(hmemDC, hmemBM)
-        BitBlt(hmemDC, 0, 0, w, h, hScreenDC, 0, 0, SRCCOPY)
+        hmemDC = create_compatible_dc(hScreenDC)
+        hmemBM = create_compatible_bitmap(hScreenDC, w, h)
+        select_object(hmemDC, hmemBM)
+        bit_blt(hmemDC, 0, 0, w, h, hScreenDC, 0, 0, SRCCOPY)
         bitmap_size = w * h * 3 + w % 4 * h
-        hpxldata = GlobalAlloc(GMEM_FIXED, bitmap_size)
-        lpvpxldata = GlobalLock(hpxldata)
+        lpvpxldata = FFI::MemoryPointer.new(bitmap_size)
 
         # Bitmap header
         # http://www.fortunecity.com/skyscraper/windows/364/bmpffrmt.html
         bmInfo = [40, w, h, 1, 24, 0, 0, 0, 0, 0, 0, 0].pack('L3S2L6')
-        GetDIBits(hmemDC, hmemBM, 0, h, lpvpxldata, bmInfo, DIB_RGB_COLORS)
+        di_bits(hmemDC, hmemBM, 0, h, lpvpxldata, bmInfo, DIB_RGB_COLORS)
 
         bmFileHeader = [
                 19778,
@@ -110,16 +164,13 @@ module Win32
                 54
         ].pack('SLSSL')
 
-        bitmap = 0.chr * (bitmap_size)
-        memcpy(bitmap, lpvpxldata, bitmap_size)
-        bmp_data = bmFileHeader + bmInfo + bitmap
+        bmp_data = bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size)
         proc.call(w, h, bmp_data)
       ensure
-        GlobalUnlock(hpxldata)
-        GlobalFree(hpxldata)
-        DeleteObject(hmemBM)
-        DeleteDC(hmemDC)
-        ReleaseDC(0, hScreenDC)
+        lpvpxldata.free
+        delete_object(hmemBM)
+        delete_dc(hmemDC)
+        release_dc(0, hScreenDC)
         nil
       end
     end
