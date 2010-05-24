@@ -16,8 +16,8 @@ describe "win32-screenshot" do
   it "captures foreground" do
     Win32::Screenshot.foreground do |width, height, bmp|
       check_image(bmp, 'foreground')
-      hwnd = Win32::Screenshot::BitmapGrabber.foreground_window
-      dimensions = Win32::Screenshot::BitmapGrabber.dimensions_for(hwnd)
+      hwnd = Win32::Screenshot::BitmapMaker.foreground_window
+      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -26,8 +26,8 @@ describe "win32-screenshot" do
   it "captures desktop" do
     Win32::Screenshot.desktop do |width, height, bmp|
       check_image(bmp, 'desktop')
-      hwnd = Win32::Screenshot::BitmapGrabber.desktop_window
-      dimensions = Win32::Screenshot::BitmapGrabber.dimensions_for(hwnd)
+      hwnd = Win32::Screenshot::BitmapMaker.desktop_window
+      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -38,8 +38,8 @@ describe "win32-screenshot" do
     maximize(title)
     Win32::Screenshot.window(title) do |width, height, bmp|
       check_image(bmp, 'iexplore')
-      hwnd = Win32::Screenshot::BitmapGrabber.hwnd(title)
-      dimensions = Win32::Screenshot::BitmapGrabber.dimensions_for(hwnd)
+      hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -50,8 +50,8 @@ describe "win32-screenshot" do
     minimize(title)
     Win32::Screenshot.window(title) do |width, height, bmp|
       check_image(bmp, 'calc')
-      hwnd = Win32::Screenshot::BitmapGrabber.hwnd(title)
-      dimensions = Win32::Screenshot::BitmapGrabber.dimensions_for(hwnd)
+      hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -65,8 +65,19 @@ describe "win32-screenshot" do
       # we should get the size of the picture because
       # screenshot doesn't include titlebar and the size
       # varies between different themes and Windows versions
-      hwnd = Win32::Screenshot::BitmapGrabber.hwnd(title)
-      dimensions = Win32::Screenshot::BitmapGrabber.dimensions_for(hwnd)
+      hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+      width.should == dimensions[2]
+      height.should == dimensions[3]
+    end
+  end
+
+  it "captures by hwnd" do
+    title = /calculator/i
+    hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+    Win32::Screenshot.hwnd(hwnd) do |width, height, bmp|
+      check_image(bmp, 'calc_hwnd')
+      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end

@@ -16,9 +16,9 @@ module SpecHelper
   end
 
   def wait_for_programs_to_open
-    until Win32::Screenshot::BitmapGrabber.hwnd(/Internet Explorer/) &&
-            Win32::Screenshot::BitmapGrabber.hwnd(/Notepad/) &&
-            Win32::Screenshot::BitmapGrabber.hwnd(/Calculator/)
+    until Win32::Screenshot::BitmapMaker.hwnd(/Internet Explorer/) &&
+            Win32::Screenshot::BitmapMaker.hwnd(/Notepad/) &&
+            Win32::Screenshot::BitmapMaker.hwnd(/Calculator/)
       sleep 0.1
     end
     # just in case of slow PC
@@ -26,22 +26,22 @@ module SpecHelper
   end
 
   def maximize title
-    Win32::Screenshot::BitmapGrabber.show_window(Win32::Screenshot::BitmapGrabber.hwnd(title),
-                                                 Win32::Screenshot::BitmapGrabber::SW_MAXIMIZE)
+    Win32::Screenshot::BitmapMaker.show_window(Win32::Screenshot::BitmapMaker.hwnd(title),
+                                                 Win32::Screenshot::BitmapMaker::SW_MAXIMIZE)
     sleep 1
   end
 
   def minimize title
-    Win32::Screenshot::BitmapGrabber.show_window(Win32::Screenshot::BitmapGrabber.hwnd(title),
-                                                 Win32::Screenshot::BitmapGrabber::SW_MINIMIZE)
+    Win32::Screenshot::BitmapMaker.show_window(Win32::Screenshot::BitmapMaker.hwnd(title),
+                                                 Win32::Screenshot::BitmapMaker::SW_MINIMIZE)
     sleep 1
   end
 
   def resize title
-    Win32::Screenshot::BitmapGrabber.set_window_pos(Win32::Screenshot::BitmapGrabber.hwnd(title),
-                                                    Win32::Screenshot::BitmapGrabber::HWND_TOPMOST,
+    Win32::Screenshot::BitmapMaker.set_window_pos(Win32::Screenshot::BitmapMaker.hwnd(title),
+                                                    Win32::Screenshot::BitmapMaker::HWND_TOPMOST,
                                                     0, 0, 150, 238,
-                                                    Win32::Screenshot::BitmapGrabber::SWP_NOMOVE)
+                                                    Win32::Screenshot::BitmapMaker::SWP_NOMOVE)
     sleep 1
   end
 end

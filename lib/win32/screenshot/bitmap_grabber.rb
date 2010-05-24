@@ -2,7 +2,7 @@ require 'ffi'
 
 module Win32
   class Screenshot
-    module BitmapGrabber
+    module BitmapMaker
       extend FFI::Library
 
       ffi_lib 'user32', 'kernel32', 'gdi32'

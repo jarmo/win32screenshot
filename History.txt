@@ -1,13 +1,14 @@
 = 0.0.4 XXXX-XX-XX
 * Fixed a bug where taking of screenshots failed on some sizes of windows (thanks for the tip from Tony Popiel)
-* Blocks should be used when taking screenshots for cleaning up resources at correct time (Aslak Hellesøy)
+* Blocks should be used when taking screenshots for cleaning up resources after usage (Aslak Hellesøy)
 * Changed library paths - it is now needed to require 'win32/screenshot' (Aslak Hellesøy)
-* Replaced Ruby::DL with Win32::API for better support and less segfaults (Jarmo Pertman)
-* Added set_foreground for better reliability (Jarmo Pertman)
-* Win32::Screenshot.window restores window if it's minimized before taking screenshots (Jarmo Pertman)
+* Replaced Ruby::DL with Ruby-FFI for better VM support and less segfaults (Jarmo Pertman)
+* Added Ruby 1.9.1 support (Jarmo Pertman)
+* Win32::Screenshot.window restores window if it's minimized before taking screenshots and brings it to the foreground (Jarmo Pertman)
+* Changed some internal method names (Jarmo Pertman)
 * Replaced Test::Unit with RSpec and made specs more robust (Jarmo Pertman)
 
-PS! This version is not backwards compatible, but upgrading should be relatively easy nevertheless.
+PS! This version is not backwards compatible due to different method names and usage, but upgrading should be relatively easy nevertheless.
 
 = 0.0.3 2007-01-18
 * Fixed bug with too many callbacks
