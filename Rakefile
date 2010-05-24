@@ -16,8 +16,6 @@ begin
     gem.add_dependency "ffi"
 
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency "win32-process"
-    gem.add_development_dependency "win32-dir"
     gem.add_development_dependency "rmagick"
   end
   Jeweler::GemcutterTasks.new

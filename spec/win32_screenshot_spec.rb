@@ -4,10 +4,11 @@ describe "win32-screenshot" do
   include SpecHelper
 
   before :all do
+    PROGRAM_FILES = "c:/program files/"
     FileUtils.rm Dir.glob("*.bmp")
     FileUtils.rm Dir.glob("*.png")
     @notepad = IO.popen("notepad").pid
-    @iexplore = IO.popen(File.join(Dir::PROGRAM_FILES, "Internet Explorer", "iexplore about:blank")).pid
+    @iexplore = IO.popen(File.join(PROGRAM_FILES, "Internet Explorer", "iexplore about:blank")).pid
     @calc = IO.popen("calc").pid
     wait_for_programs_to_open
   end

@@ -3,9 +3,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'win32/screenshot'
 require 'spec'
 require 'spec/autorun'
-require "rmagick"
-require "win32/process"
-require "win32/dir"
+require 'rmagick'
 
 module SpecHelper
   def check_image(bmp, file=nil)
