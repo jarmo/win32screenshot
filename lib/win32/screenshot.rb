@@ -1,4 +1,4 @@
-require 'win32/screenshot/bitmap_grabber'
+require 'win32/screenshot/bitmap_maker'
 
 module Win32
   class Screenshot
