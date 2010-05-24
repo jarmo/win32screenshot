@@ -27,8 +27,6 @@ module Win32
                       [:long], :bool
       attach_function :show_window, :ShowWindow,
                       [:long, :int], :bool
-      attach_function :set_window_pos, :SetWindowPos,
-                      [:long, :long, :int, :int, :int, :int, :int], :bool
       attach_function :foreground_window, :GetForegroundWindow,
                       [], :long
       attach_function :desktop_window, :GetDesktopWindow,
@@ -77,20 +75,6 @@ module Win32
         end
       end
 
-      SW_SHOW = 5
-      SW_RESTORE = 9
-      SW_MAXIMIZE = 3
-      SW_MINIMIZE = 6
-
-      HWND_TOPMOST = -1
-      HWND_NOTOPMOST = -2
-      SWP_NOSIZE = 1
-      SWP_NOMOVE = 2
-      SWP_SHOWWINDOW = 40
-
-      SRCCOPY = 0x00CC0020
-      DIB_RGB_COLORS = 0
-
       module_function
 
       def hwnd(window_title)
@@ -105,12 +89,16 @@ module Win32
         end
       end
 
+      SW_SHOW = 5
+
       def prepare_window(hwnd, pause)
         restore(hwnd) if minimized(hwnd)
         set_foreground(hwnd)
         show_window(hwnd, SW_SHOW)
         sleep pause
       end
+
+      SW_RESTORE = 9
 
       def restore(hwnd)
         show_window(hwnd, SW_RESTORE)
@@ -139,11 +127,13 @@ module Win32
         __capture(hScreenDC, x1, y1, x2, y2, &proc)
       end
 
+      SRCCOPY = 0x00CC0020
+      DIB_RGB_COLORS = 0
+
       def __capture(hScreenDC, x1, y1, x2, y2, &proc)
         w = x2-x1
         h = y2-y1
 
-        # Reserve some memory
         hmemDC = create_compatible_dc(hScreenDC)
         hmemBM = create_compatible_bitmap(hScreenDC, w, h)
         select_object(hmemDC, hmemBM)
@@ -171,7 +161,6 @@ module Win32
         delete_object(hmemBM)
         delete_dc(hmemDC)
         release_dc(0, hScreenDC)
-        nil
       end
     end
   end

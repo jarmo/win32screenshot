@@ -6,6 +6,19 @@ require 'spec/autorun'
 require 'rmagick'
 
 module SpecHelper
+  SW_MAXIMIZE = 3
+  SW_MINIMIZE = 6
+  HWND_TOPMOST = -1
+  SWP_NOMOVE = 2
+
+  extend FFI::Library
+  ffi_lib 'user32'
+  ffi_convention :stdcall
+
+  # user32.dll
+  attach_function :set_window_pos, :SetWindowPos,
+                  [:long, :long, :int, :int, :int, :int, :int], :bool
+
   def check_image(bmp, file=nil)
     File.open("#{file}.bmp", "wb") {|io| io.write(bmp)} unless file.nil?
     bmp[0..1].should == 'BM'
@@ -27,21 +40,21 @@ module SpecHelper
 
   def maximize title
     Win32::Screenshot::BitmapMaker.show_window(Win32::Screenshot::BitmapMaker.hwnd(title),
-                                                 Win32::Screenshot::BitmapMaker::SW_MAXIMIZE)
+                                               SW_MAXIMIZE)
     sleep 1
   end
 
   def minimize title
     Win32::Screenshot::BitmapMaker.show_window(Win32::Screenshot::BitmapMaker.hwnd(title),
-                                                 Win32::Screenshot::BitmapMaker::SW_MINIMIZE)
+                                               SW_MINIMIZE)
     sleep 1
   end
 
   def resize title
-    Win32::Screenshot::BitmapMaker.set_window_pos(Win32::Screenshot::BitmapMaker.hwnd(title),
-                                                    Win32::Screenshot::BitmapMaker::HWND_TOPMOST,
-                                                    0, 0, 150, 238,
-                                                    Win32::Screenshot::BitmapMaker::SWP_NOMOVE)
+    set_window_pos(Win32::Screenshot::BitmapMaker.hwnd(title),
+                                                  HWND_TOPMOST,
+                                                  0, 0, 150, 238,
+                                                  SWP_NOMOVE)
     sleep 1
   end
 end
