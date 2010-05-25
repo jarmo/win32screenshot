@@ -1,16 +1,50 @@
-= win32screenshot
+= Win32::Screenshot (old name win32screenshot)
 
-Description goes here.
+* http://github.com/jarmo/win32screenshot
 
-== Note on Patches/Pull Requests
+== DESCRIPTION
+
+Capture Screenshots on Windows with Ruby. This library captures
+screenshots in bmp format, but you may use RMagick to convert these to some
+other formats like png.
+
+== SYNOPSIS
+
+  require 'win32/screenshot'
  
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+  # make a screenshot of the foreground window
+  Win32::Screenshot.foreground do |width, height, bmp|
+    File.open("picture1.bmp", "wb") {|file| file.puts bmp}
+  end
+  
+  # make a screenshot of the screen
+  Win32::Screenshot.desktop do |width, height, bmp|
+    File.open("picture2.bmp", "wb") {|file| file.puts bmp}
+  end
+  
+  # make a screenshot of the window, which has a string part of it's title
+  Win32::Screenshot.window("Internet Explorer") do |width, height, bmp|
+    File.open("picture3.bmp", "wb") {|file| file.puts bmp}
+  end
+  
+  # make a screenshot of the window, which matches regexp against it's title
+  Win32::Screenshot.window(/Internet Explorer/) do |width, height, bmp|
+    File.open("picture4.bmp", "wb") {|file| file.puts bmp}
+  end
+  
+  # make a screenshot of the window with specified window handle
+  Win32::Screenshot.hwnd(window_handle) do |width, height, bmp|
+    File.open("picture5.bmp", "wb") {|file| file.puts bmp}
+  end
+
+  # convert a screenshot to the png format with RMagick
+  require 'rmagick'
+  
+  Win32::Screenshot.hwnd(window_handle) do |width, height, bmp|
+    img = Magick::Image.from_blob(bmp)
+    png = img[0].to_blob {self.format = 'PNG'}
+    File.open("picture6.png", "wb") {|file| file.puts png}
+  end
 
 == Copyright
 

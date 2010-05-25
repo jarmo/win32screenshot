@@ -9,7 +9,10 @@ module SpecHelper
   SW_MAXIMIZE = 3
   SW_MINIMIZE = 6
   HWND_TOPMOST = -1
+  HWND_NOTOPMOST = -2
+  SWP_NOSIZE = 1
   SWP_NOMOVE = 2
+  SWP_SHOWWINDOW = 40
 
   extend FFI::Library
   ffi_lib 'user32'
@@ -25,7 +28,7 @@ module SpecHelper
     img = Magick::Image.from_blob(bmp)
     png = img[0].to_blob {self.format = 'PNG'}
     png[0..3].should == "\211PNG"
-    File.open("#{file}.png", "wb") {|io| io.write(png)} unless file.nil?
+    File.open("#{file}.png", "wb") {|io| io.puts(png)} unless file.nil?
   end
 
   def wait_for_programs_to_open
@@ -51,10 +54,15 @@ module SpecHelper
   end
 
   def resize title
-    set_window_pos(Win32::Screenshot::BitmapMaker.hwnd(title),
-                                                  HWND_TOPMOST,
-                                                  0, 0, 150, 238,
-                                                  SWP_NOMOVE)
+    hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+    set_window_pos(hwnd,
+                   HWND_TOPMOST,
+                   0, 0, 150, 238,
+                   SWP_NOMOVE)
+    set_window_pos(hwnd,
+                   HWND_NOTOPMOST,
+                   0, 0, 0, 0,
+                   SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE)
     sleep 1
   end
 end
