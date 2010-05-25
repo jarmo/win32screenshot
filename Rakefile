@@ -13,6 +13,8 @@ begin
     gem.homepage = "http://github.com/jarmo/win32screenshot"
     gem.authors = ["Jarmo Pertman", "Aslak Hellesøy"]
 
+    gem.rdoc_options = ["--main", "README.rdoc"]
+
     gem.add_dependency "ffi"
 
     gem.add_development_dependency "rspec", ">= 1.2.9"

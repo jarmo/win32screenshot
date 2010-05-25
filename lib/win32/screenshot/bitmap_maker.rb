@@ -2,7 +2,8 @@ require 'ffi'
 
 module Win32
   class Screenshot
-    module BitmapMaker
+    # internal methods
+    module BitmapMaker #:nodoc:all
       extend FFI::Library
 
       ffi_lib 'user32', 'kernel32', 'gdi32'

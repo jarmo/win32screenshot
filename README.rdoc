@@ -12,27 +12,27 @@ other formats like png.
 
   require 'win32/screenshot'
  
-  # make a screenshot of the foreground window
+  # take a screenshot of the foreground window
   Win32::Screenshot.foreground do |width, height, bmp|
     File.open("picture1.bmp", "wb") {|file| file.puts bmp}
   end
   
-  # make a screenshot of the screen
+  # take a screenshot of the screen
   Win32::Screenshot.desktop do |width, height, bmp|
     File.open("picture2.bmp", "wb") {|file| file.puts bmp}
   end
   
-  # make a screenshot of the window, which has a string part of it's title
+  # take a screenshot of the window, which has a text part of it's title
   Win32::Screenshot.window("Internet Explorer") do |width, height, bmp|
     File.open("picture3.bmp", "wb") {|file| file.puts bmp}
   end
   
-  # make a screenshot of the window, which matches regexp against it's title
+  # take a screenshot of the window, which matches regexp against it's title
   Win32::Screenshot.window(/Internet Explorer/) do |width, height, bmp|
     File.open("picture4.bmp", "wb") {|file| file.puts bmp}
   end
   
-  # make a screenshot of the window with specified window handle
+  # take a screenshot of the window with specified window handle
   Win32::Screenshot.hwnd(window_handle) do |width, height, bmp|
     File.open("picture5.bmp", "wb") {|file| file.puts bmp}
   end
