@@ -1,7 +1,7 @@
-= 0.0.4 XXXX-XX-XX
+= 0.0.4 2010-05-27 - A Complete Overhaul
 * Fixed a bug where taking of screenshots failed on some sizes of windows (thanks for the tip from Tony Popiel)
 * Blocks should be used when taking screenshots for cleaning up resources after usage (Aslak Hellesøy)
-* Changed library paths - it is now needed to require 'win32/screenshot' (Aslak Hellesøy)
+* Changed library structure - it is now needed to require 'win32/screenshot' (Aslak Hellesøy)
 * Replaced Ruby::DL with Ruby-FFI for better VM support and less segfaults (Jarmo Pertman)
 * Added Ruby 1.9.1 support (Jarmo Pertman)
 * Win32::Screenshot.window restores window if it's minimized before taking screenshots and brings it to the foreground (Jarmo Pertman)
