@@ -3,7 +3,8 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'win32/screenshot'
 require 'spec'
 require 'spec/autorun'
-require 'rmagick'
+require 'rubygems'
+require 'RMagick'
 
 module SpecHelper
   SW_MAXIMIZE = 3

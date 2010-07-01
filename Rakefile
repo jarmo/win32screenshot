@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require 'rake'
+require 'os'
 
 begin
   require 'jeweler'
@@ -18,7 +19,12 @@ begin
     gem.add_dependency "ffi"
 
     gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency "rmagick"
+    gem.add_development_dependency 'os'
+    if OS.java?
+      gem.add_development_dependency "rmagick4j"
+    else
+      gem.add_development_dependency "rmagick"
+    end
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
