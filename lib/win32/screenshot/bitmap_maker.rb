@@ -65,15 +65,13 @@ module Win32
 
       
       EnumWindowCallback = Proc.new do |hwnd, param|
-        got = SimpleStruct.new param
+        got = NameAndHwndStruct.new param
 
-        print 'in enum', param, 'searching for',got[:window_title_pointer].read_string, got, 'name is', got[:window_title_pointer].read_string, "\n"
         title_length = window_text_length(hwnd) + 1
         title = FFI::MemoryPointer.new :char, title_length
         window_text(hwnd, title, title_length)
         title = title.read_string
         if title =~ Regexp.new(got[:window_title_pointer].read_string) && window_visible(hwnd)
-          puts 'match, writing', hwnd, 'to', param
           got[:hwnd] = hwnd
           false
         else
@@ -83,7 +81,7 @@ module Win32
 
       module_function
       
-      class SimpleStruct < FFI::Struct
+      class NameAndHwndStruct < FFI::Struct
           layout  :window_title_pointer, :pointer,
                   :hwnd, :long
       end
@@ -92,17 +90,12 @@ module Win32
         original_title=window_title
         window_title = window_title.to_s
         window_params = FFI::MemoryPointer.from_string(window_title)
-        window_struct = SimpleStruct.new
+        window_struct = NameAndHwndStruct.new
         window_struct[:window_title_pointer] = window_params
-        p 'passing params as ', window_struct, window_struct.to_ptr
         enum_windows(EnumWindowCallback, window_struct.to_ptr)
-        p 'got', window_struct[:hwnd]
         if window_struct[:hwnd] != 0
           # hwnd found
-          puts 'success...'
-          hwnd = window_struct[:hwnd] # reads a long
-          puts 'success!', hwnd, 'now is', window_title, 'was', original_title
-          hwnd
+          window_struct[:hwnd] # reads a long
         else
           nil
         end
