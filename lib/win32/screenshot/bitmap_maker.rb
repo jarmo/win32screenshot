@@ -87,7 +87,6 @@ module Win32
       end
       
       def hwnd(window_title)
-        original_title=window_title
         window_title = window_title.to_s
         window_params = FFI::MemoryPointer.from_string(window_title)
         window_struct = NameAndHwndStruct.new
