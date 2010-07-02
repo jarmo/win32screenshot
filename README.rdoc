@@ -31,10 +31,16 @@ other formats like png.
   Win32::Screenshot.window(/Internet Explorer/) do |width, height, bmp|
     File.open("picture4.bmp", "wb") {|file| file.puts bmp}
   end
+
+  # take a screenshot of the area of the window where upper left x and y
+  # coordinates are 0 and 10, width is 100 and height is 200
+  Win32::Screenshot.window_area("Internet Explorer", 0, 10, 100, 200) do |width, height, bmp|
+    File.open("picture5.bmp", "wb") {|file| file.puts bmp}
+  end
   
   # take a screenshot of the window with specified window handle
   Win32::Screenshot.hwnd(window_handle) do |width, height, bmp|
-    File.open("picture5.bmp", "wb") {|file| file.puts bmp}
+    File.open("picture6.bmp", "wb") {|file| file.puts bmp}
   end
 
   # convert a screenshot to the png format with RMagick
@@ -43,7 +49,7 @@ other formats like png.
   Win32::Screenshot.hwnd(window_handle) do |width, height, bmp|
     img = Magick::Image.from_blob(bmp)
     png = img[0].to_blob {self.format = 'PNG'}
-    File.open("picture6.png", "wb") {|file| file.puts png}
+    File.open("picture7.png", "wb") {|file| file.puts png}
   end
 
 == Copyright

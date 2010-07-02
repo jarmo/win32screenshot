@@ -72,6 +72,50 @@ describe "win32-screenshot" do
     end
   end
 
+  it "captures area of the window" do
+    title = /calculator/i
+    Win32::Screenshot.window_area(title, 30, 30, 100, 150) do |width, height, bmp|
+      check_image(bmp, 'calc_part')
+      width.should == 70
+      height.should == 120
+    end
+  end
+
+  it "captures whole window if window size is specified as coordinates" do
+    title = /calculator/i
+    hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+    dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+    Win32::Screenshot.window_area(title, 0, 0, dimensions[2], dimensions[3]) do |width, height, bmp|
+      check_image(bmp, 'calc_part_full_window')
+      width.should == dimensions[2]
+      height.should == dimensions[3]
+    end
+  end
+
+  it "doesn't allow to capture area of the window with negative coordinates" do
+    title = /calculator/i
+    lambda {Win32::Screenshot.window_area(title, 0, 0, -1, 100) {|width, height, bmp| check_image('calc2')}}.
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid!")
+  end
+
+  it "doesn't allow to capture area of the window if coordinates are the same" do
+    title = /calculator/i
+    lambda {Win32::Screenshot.window_area(title, 10, 0, 10, 20) {|width, height, bmp| check_image('calc4')}}.
+            should raise_exception("specified coordinates (10, 0, 10, 20) are invalid!")
+  end
+
+  it "doesn't allow to capture area of the window if second coordinate is smaller than first one" do
+    title = /calculator/i
+    lambda {Win32::Screenshot.window_area(title, 0, 10, 10, 9) {|width, height, bmp| check_image('calc5')}}.
+            should raise_exception("specified coordinates (0, 10, 10, 9) are invalid!")
+  end
+
+  it "doesn't allow to capture area of the window with too big coordinates" do
+    title = /calculator/i
+    lambda {Win32::Screenshot.window_area(title, 0, 0, 10, 10000) {|width, height, bmp| check_image('calc3')}}.
+            should raise_exception("specified coordinates (0, 0, 10, 10000) are invalid!")
+  end
+
   it "captures by hwnd" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
