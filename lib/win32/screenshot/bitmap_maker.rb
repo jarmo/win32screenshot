@@ -108,12 +108,9 @@ module Win32
         end
       end
 
-      SW_SHOW = 5
-
       def prepare_window(hwnd, pause)
         restore(hwnd) if minimized(hwnd)
         set_foreground(hwnd)
-        show_window(hwnd, SW_SHOW)
         sleep pause
       end
 
@@ -140,16 +137,16 @@ module Win32
         x1, y1, x2, y2 = rect.unpack('L4')
       end
 
-      def capture(hwnd, &proc)
-        hScreenDC = dc(hwnd)
+      def capture_all(hwnd, &proc)
         x1, y1, x2, y2 = dimensions_for(hwnd)
-        __capture(hScreenDC, x1, y1, x2, y2, &proc)
+        capture_area(hwnd, x1, y1, x2, y2, &proc)
       end
 
       SRCCOPY = 0x00CC0020
       DIB_RGB_COLORS = 0
 
-      def __capture(hScreenDC, x1, y1, x2, y2, &proc)
+      def capture_area(hwnd, x1, y1, x2, y2, &proc)
+        hScreenDC = dc(hwnd)
         w = x2-x1
         h = y2-y1
 
