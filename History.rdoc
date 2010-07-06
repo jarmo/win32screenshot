@@ -1,7 +1,10 @@
 = 0.0.5 2010-XX-XX
 * Added method window_area for capturing specified area of the window instead of full window (Jarmo Pertman)
   Usage: Win32::Screenshot.window_area(title, x1, y1, x2, y2) {|width, height, bmp|}
+
+== Internal changes
 * Removed usage of ShowWindow with parameter SW_SHOW when trying to bring window to front due it's behaviour of resizing window if it was maximized (Jarmo Pertman)
+* Using FFI::Struct when searching window handle (Roger Pack)
 
 = 0.0.4 2010-05-27 - A Complete Overhaul
 * Fixed a bug where taking of screenshots failed on some sizes of windows (thanks for the tip from Tony Popiel)
