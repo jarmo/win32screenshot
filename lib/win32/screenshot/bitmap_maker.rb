@@ -63,16 +63,15 @@ module Win32
       attach_function :release_dc, :ReleaseDC,
                       [:long, :long], :int
 
-      
-      EnumWindowCallback = Proc.new do |hwnd, param|
-        got = NameAndHwndStruct.new param
 
+      EnumWindowCallback = Proc.new do |hwnd, param|
+        searched_window = WindowStruct.new param
         title_length = window_text_length(hwnd) + 1
         title = FFI::MemoryPointer.new :char, title_length
         window_text(hwnd, title, title_length)
         title = title.read_string
-        if title =~ Regexp.new(got[:window_title_pointer].read_string) && window_visible(hwnd)
-          got[:hwnd] = hwnd
+        if title =~ Regexp.new(searched_window[:title].read_string) && window_visible(hwnd)
+          searched_window[:hwnd] = hwnd
           false
         else
           true
@@ -80,24 +79,18 @@ module Win32
       end
 
       module_function
-      
-      class NameAndHwndStruct < FFI::Struct
-          layout  :window_title_pointer, :pointer,
-                  :hwnd, :long
+
+      class WindowStruct < FFI::Struct
+        layout :title, :pointer,
+               :hwnd, :long
       end
-      
+
       def hwnd(window_title)
-        window_title = window_title.to_s
-        window_params = FFI::MemoryPointer.from_string(window_title)
-        window_struct = NameAndHwndStruct.new
-        window_struct[:window_title_pointer] = window_params
-        enum_windows(EnumWindowCallback, window_struct.to_ptr)
-        if window_struct[:hwnd] != 0
-          # hwnd found
-          window_struct[:hwnd] # reads a long
-        else
-          nil
-        end
+        window = WindowStruct.new
+        window_title = FFI::MemoryPointer.from_string(window_title.to_s)
+        window[:title] = window_title
+        enum_windows(EnumWindowCallback, window.to_ptr)
+        window[:hwnd] == 0 ? nil : window[:hwnd] 
       end
 
       def prepare_window(hwnd, pause)
