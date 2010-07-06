@@ -3,14 +3,23 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 describe "win32-screenshot" do
   include SpecHelper
 
-  before :all do
-    PROGRAM_FILES = "c:/program files/"
+  def cleanup
     FileUtils.rm Dir.glob("*.bmp")
     FileUtils.rm Dir.glob("*.png")
+  end    
+    
+  
+  before :all do
+    cleanup
+    PROGRAM_FILES = "c:/program files/"
     @notepad = IO.popen("notepad").pid
     @iexplore = IO.popen(File.join(PROGRAM_FILES, "Internet Explorer", "iexplore about:blank")).pid
     @calc = IO.popen("calc").pid
     wait_for_programs_to_open
+  end
+  
+  after :all do
+    cleanup
   end
 
   it "captures foreground" do
