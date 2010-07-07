@@ -56,3 +56,8 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+desc "Delete all temporary files"
+task :clobber => [:clobber_rdoc, :clobber_rcov] do
+  rm_rf "spec/tmp"
+end
