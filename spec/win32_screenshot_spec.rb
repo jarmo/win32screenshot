@@ -23,6 +23,19 @@ describe "win32-screenshot" do
     end
   end
 
+  it "captures area of the foreground" do
+    Win32::Screenshot.foreground_area(30, 30, 100, 150) do |width, height, bmp|
+      check_image(bmp, 'foreground_area')
+      width.should == 70
+      height.should == 120
+    end
+  end
+
+  it "doesn't allow to capture area of the foreground with invalid coordinates" do
+    lambda {Win32::Screenshot.foreground_area(0, 0, -1, 100) {|width, height, bmp| check_image('foreground2')}}.
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid!")
+  end
+
   it "captures desktop" do
     Win32::Screenshot.desktop do |width, height, bmp|
       check_image(bmp, 'desktop')
@@ -31,6 +44,19 @@ describe "win32-screenshot" do
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
+  end
+
+  it "captures area of the desktop" do
+    Win32::Screenshot.desktop_area(30, 30, 100, 150) do |width, height, bmp|
+      check_image(bmp, 'desktop_area')
+      width.should == 70
+      height.should == 120
+    end
+  end
+
+  it "doesn't allow to capture area of the desktop with invalid coordinates" do
+    lambda {Win32::Screenshot.desktop_area(0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid!")
   end
 
   it "captures maximized window by window title" do
@@ -75,7 +101,7 @@ describe "win32-screenshot" do
   it "captures area of the window" do
     title = /calculator/i
     Win32::Screenshot.window_area(title, 30, 30, 100, 150) do |width, height, bmp|
-      check_image(bmp, 'calc_part')
+      check_image(bmp, 'calc_area')
       width.should == 70
       height.should == 120
     end
@@ -86,7 +112,7 @@ describe "win32-screenshot" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
     dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
     Win32::Screenshot.window_area(title, 0, 0, dimensions[2], dimensions[3]) do |width, height, bmp|
-      check_image(bmp, 'calc_part_full_window')
+      check_image(bmp, 'calc_area_full_window')
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -116,7 +142,7 @@ describe "win32-screenshot" do
             should raise_exception("specified coordinates (0, 0, 10, 10000) are invalid!")
   end
 
-  it "captures by hwnd" do
+  it "captures by window with handle" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
     Win32::Screenshot.hwnd(hwnd) do |width, height, bmp|
@@ -125,6 +151,21 @@ describe "win32-screenshot" do
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
+  end
+
+  it "captures area of the window with handle" do
+    hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
+    Win32::Screenshot.hwnd_area(hwnd, 30, 30, 100, 150) do |width, height, bmp|
+      check_image(bmp, 'calc_hwnd_area')
+      width.should == 70
+      height.should == 120
+    end
+  end
+
+  it "doesn't allow to capture area of the window with handle with invalid coordinates" do
+    hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
+    lambda {Win32::Screenshot.hwnd_area(hwnd, 0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid!")
   end
 
   after :all do
