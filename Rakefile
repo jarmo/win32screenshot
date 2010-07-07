@@ -59,5 +59,5 @@ end
 
 desc "Remove all temporary files"
 task :clobber => [:clobber_rdoc, :clobber_rcov] do
-  rm_rf "spec/tmp"
+  rm_r "spec/tmp"
 end
