@@ -5,6 +5,7 @@ require 'rubygems'
 require 'spec'
 require 'spec/autorun'
 require 'RMagick'
+require 'fileutils'
 
 module SpecHelper
   SW_MAXIMIZE = 3
@@ -24,12 +25,14 @@ module SpecHelper
                   [:long, :long, :int, :int, :int, :int, :int], :bool
 
   def check_image(bmp, file=nil)
-    File.open("#{file}.bmp", "wb") {|io| io.write(bmp)} unless file.nil?
+    temp_dir = File.join(File.dirname(__FILE__), 'tmp')
+    FileUtils.mkdir temp_dir unless File.exists?(temp_dir)
+    File.open(File.join(temp_dir, "#{file}.bmp"), "wb") {|io| io.write(bmp)} unless file.nil?
     bmp[0..1].should == 'BM'
     img = Magick::Image.from_blob(bmp)
     png = img[0].to_blob {self.format = 'PNG'}
     png[0..3].should == "\211PNG"
-    File.open("#{file}.png", "wb") {|io| io.puts(png)} unless file.nil?
+    File.open(File.join(temp_dir, "#{file}.png"), "wb") {|io| io.puts(png)} unless file.nil?
   end
 
   def wait_for_programs_to_open

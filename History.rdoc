@@ -1,6 +1,12 @@
-= 0.0.5 2010-XX-XX
+= 0.0.5 2010-07-07
 * Added method window_area for capturing specified area of the window instead of full window (Jarmo Pertman)
   Usage: Win32::Screenshot.window_area(title, x1, y1, x2, y2) {|width, height, bmp|}
+* Added method foreground_area for capturing area of the foreground (Jarmo Pertman)
+  Usage: Win32::Screenshot.foreground_area(x1, y1, x2, y2) {|width, height, bmp|}
+* Added method desktop_area for capturing area of the visible view (Jarmo Pertman)
+  Usage: Win32::Screenshot.desktop_area(x1, y1, x2, y2) {|width, height, bmp|}
+* Added method hwnd_area for capturing area of the window with specified handle (Jarmo Pertman)
+  Usage: Win32::Screenshot.hwnd_area(hwnd, x1, y1, x2, y2) {|width, height, bmp|}
 
 == Internal changes
 * Removed usage of ShowWindow with parameter SW_SHOW when trying to bring window to front due it's behaviour of resizing window if it was maximized (Jarmo Pertman)
