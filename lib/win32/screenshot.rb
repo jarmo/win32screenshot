@@ -11,10 +11,34 @@ module Win32
         BitmapMaker.capture_all(hwnd, &proc)
       end
 
-      # captures desktop
+      # captures area of the foreground
+      # where *x1* and *y1* are 0 in the upper left corner and
+      # *x2* specifies the width and *y2* the height of the area to be captured
+      def foreground_area(x1, y1, x2, y2, &proc)
+        hwnd = BitmapMaker.foreground_window
+        validate_coordinates(hwnd, x1, y1, x2, y2)
+        BitmapMaker.capture_area(hwnd, x1, y1, x2, y2, &proc)
+      end
+
+      # captures visible view of the screen
+      #
+      # to make screenshot of the real desktop, all
+      # windows must be minimized before
       def desktop(&proc)
         hwnd = BitmapMaker.desktop_window
         BitmapMaker.capture_all(hwnd, &proc)
+      end
+
+      # captures area of the visible view of the screen
+      # where *x1* and *y1* are 0 in the upper left corner and
+      # *x2* specifies the width and *y2* the height of the area to be captured
+      #
+      # to make screenshot of the real desktop, all
+      # windows must be minimized before
+      def desktop_area(x1, y1, x2, y2, &proc)
+        hwnd = BitmapMaker.desktop_window
+        validate_coordinates(hwnd, x1, y1, x2, y2)
+        BitmapMaker.capture_area(hwnd, x1, y1, x2, y2, &proc)
       end
 
       # captures window with a *title_query* and waits *pause* (by default is 0.5)
@@ -29,15 +53,22 @@ module Win32
       # *x2* specifies the width and *y2* the height of the area to be captured
       def window_area(title_query, x1, y1, x2, y2, pause=0.5, &proc)
         hwnd = window_hwnd(title_query)
-        validate_coordinates(hwnd, x1, y1, x2, y2)
-        BitmapMaker.prepare_window(hwnd, pause)
-        BitmapMaker.capture_area(hwnd, x1, y1, x2, y2, &proc)
+        hwnd_area(hwnd, x1, y1, x2, y2, pause, &proc)
       end
 
       # captures by window handle
       def hwnd(hwnd, pause=0.5, &proc)
         BitmapMaker.prepare_window(hwnd, pause)
         BitmapMaker.capture_all(hwnd, &proc)
+      end
+
+      # captures area of the window with a handle of *hwnd*
+      # where *x1* and *y1* are 0 in the upper left corner and
+      # *x2* specifies the width and *y2* the height of the area to be captured
+      def hwnd_area(hwnd, x1, y1, x2, y2, pause=0.5, &proc)
+        validate_coordinates(hwnd, x1, y1, x2, y2)
+        BitmapMaker.prepare_window(hwnd, pause)
+        BitmapMaker.capture_area(hwnd, x1, y1, x2, y2, &proc)
       end
 
       private
