@@ -6,7 +6,7 @@ module Win32
     module BitmapMaker #:nodoc:all
       extend FFI::Library
 
-      ffi_lib 'user32', 'kernel32', 'gdi32'
+      ffi_lib 'user32', 'gdi32'
       ffi_convention :stdcall
 
       callback :enum_callback, [:long, :pointer], :bool
@@ -38,17 +38,11 @@ module Win32
                       [:long, :long, :bool], :bool
       attach_function :set_foreground_window, :SetForegroundWindow,
                       [:long], :bool
-      attach_function :set_focus, :SetFocus,
-                      [:long], :bool
       attach_function :bring_window_to_top, :BringWindowToTop, 
                        [:long], :bool                
       attach_function :set_active_window, :SetActiveWindow, 
                        [:long], :long
       
-
-      # kernel32.dll
-      attach_function :current_thread_id, :GetCurrentThreadId,
-                      [], :long
 
       # gdi32.dll
       attach_function :create_compatible_dc, :CreateCompatibleDC,
