@@ -1,3 +1,6 @@
+= 0.0.6 2010-XX-XX
+* Trying to bring window to the foreground more aggressively (Roger Pack)
+
 = 0.0.5 2010-07-07
 * Added method window_area for capturing specified area of the window instead of full window (Jarmo Pertman)
   Usage: Win32::Screenshot.window_area(title, x1, y1, x2, y2) {|width, height, bmp|}
