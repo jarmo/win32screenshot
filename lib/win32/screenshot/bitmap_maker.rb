@@ -42,6 +42,8 @@ module Win32
                       [:long], :bool
       attach_function :bring_window_to_top, :BringWindowToTop, 
                        [:long], :bool                
+      attach_function :set_active_window, :SetActiveWindow, 
+                       [:long], :long
       
 
       # kernel32.dll
@@ -114,8 +116,8 @@ module Win32
           other_thread = window_thread_process_id(hwnd, nil)
           attach_thread_input(foreground_thread, other_thread, true)
           set_foreground_window(hwnd)
+          set_active_window(hwnd)
           bring_window_to_top(hwnd)
-          set_focus(hwnd)
           attach_thread_input(foreground_thread, other_thread, false)
         end
       end
