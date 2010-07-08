@@ -24,6 +24,10 @@ module SpecHelper
   attach_function :set_window_pos, :SetWindowPos,
                   [:long, :long, :int, :int, :int, :int, :int], :bool
 
+  def cleanup
+    FileUtils.rm Dir.glob(File.join(File.dirname(__FILE__), "tmp/*"))
+  end  
+  
   def check_image(bmp, file=nil)
     temp_dir = File.join(File.dirname(__FILE__), 'tmp')
     FileUtils.mkdir temp_dir unless File.exists?(temp_dir)
