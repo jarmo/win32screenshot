@@ -111,6 +111,10 @@ module Win32
       end
 
       def set_foreground(hwnd)
+        set_foreground_window(hwnd)
+        set_active_window(hwnd)
+        bring_window_to_top(hwnd)
+        # just in case...
         if foreground_window != hwnd
           foreground_thread = window_thread_process_id(foreground_window, nil)
           other_thread = window_thread_process_id(hwnd, nil)
