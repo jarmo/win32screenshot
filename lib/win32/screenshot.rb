@@ -86,7 +86,7 @@ module Win32
         x1, y1, x2, y2 = *coords
         invalid ||= x1 >= x2 || y1 >= y2
 
-        max_x1, max_y1, max_x2, max_y2 = BitmapMaker.dimensions_for(hwnd)
+        x1_always_zero, y1_always_zero, max_x2, max_y2 = BitmapMaker.dimensions_for(hwnd)
         invalid ||= x2 > max_x2 || y2 > max_y2
         raise "specified coordinates (#{specified_coordinates}) are invalid!" if invalid
       end
