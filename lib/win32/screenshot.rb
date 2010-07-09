@@ -81,14 +81,18 @@ module Win32
 
       def validate_coordinates(hwnd, *coords)
         specified_coordinates = coords.join(', ')
-        invalid = coords.any? {|c| c < 0}
-
+        if coords.any? {|c| c < 0}
+          raise "specified coordinates (#{specified_coordinates}) are invalid! cannot have any less than zero"
+        end
         x1, y1, x2, y2 = *coords
-        invalid ||= x1 >= x2 || y1 >= y2
+        if x1 >= x2 || y1 >= y2
+          raise "specified coordinates (#{specified_coordinates}) are invalid! cannot have x1 > x2 or y1 > y2"
+        end
 
         x1_always_zero, y1_always_zero, max_x2, max_y2 = BitmapMaker.dimensions_for(hwnd)
-        invalid ||= x2 > max_x2 || y2 > max_y2
-        raise "specified coordinates (#{specified_coordinates}) are invalid!" if invalid
+        if x2 > max_x2 || y2 > max_y2
+          raise "specified coordinates (#{specified_coordinates}) are invalid! max is #{max_x2},#{max_y2}"
+        end
       end
     end
 
