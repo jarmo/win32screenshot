@@ -166,10 +166,19 @@ describe "win32-screenshot" do
     lambda {Win32::Screenshot.hwnd_area(hwnd, 0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
             should raise_exception("specified coordinates (0, 0, -1, 100) are invalid!")
   end
+  
+  it "captures based on coordinates" do
+    hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
+    bmp1 = bmp2 = nil
+    Win32::Screenshot.hwnd_area(hwnd, 100, 100, 170, 220) do |width, height, bmp|; bmp1 = bmp; end
+    Win32::Screenshot.hwnd_area(hwnd, 0, 0, 70, 120) do |width, height, bmp|; bmp2 = bmp; end
+    bmp1.length.should == bmp2.length
+    bmp1.should_not == bmp2
+  end
 
   after :all do
     Process.kill 9, @notepad
-    Process.kill 9, @iexplore
+    Process.kill 9, @iexplore rescue nil # allow for a pre-existing IE to have been used.
     Process.kill 9, @calc
   end
 end
