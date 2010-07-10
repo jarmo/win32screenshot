@@ -142,7 +142,7 @@ module Win32
         hmemDC = create_compatible_dc(hScreenDC)
         hmemBM = create_compatible_bitmap(hScreenDC, w, h)
         select_object(hmemDC, hmemBM)
-        bit_blt(hmemDC, x1, y1, w, h, hScreenDC, 0, 0, SRCCOPY)
+        bit_blt(hmemDC, 0, 0, w, h, hScreenDC, x1, y1, SRCCOPY)
         bitmap_size = w * h * 3 + w % 4 * h
         lpvpxldata = FFI::MemoryPointer.new(bitmap_size)
 
