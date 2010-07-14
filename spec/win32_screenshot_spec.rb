@@ -4,12 +4,12 @@ describe "win32-screenshot" do
   include SpecHelper    
   
   before :all do
-    cleanup
     PROGRAM_FILES = "c:/program files/"
     @notepad = IO.popen("notepad").pid
     @iexplore = IO.popen(File.join(PROGRAM_FILES, "Internet Explorer", "iexplore about:blank")).pid
     @calc = IO.popen("calc").pid
     wait_for_programs_to_open
+    cleanup
   end
 
   it "captures foreground" do
@@ -32,7 +32,7 @@ describe "win32-screenshot" do
 
   it "doesn't allow to capture area of the foreground with invalid coordinates" do
     lambda {Win32::Screenshot.foreground_area(0, 0, -1, 100) {|width, height, bmp| check_image('foreground2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid! cannot have any less than zero")
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
 
   it "captures desktop" do
@@ -55,7 +55,7 @@ describe "win32-screenshot" do
 
   it "doesn't allow to capture area of the desktop with invalid coordinates" do
     lambda {Win32::Screenshot.desktop_area(0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid! cannot have any less than zero")
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
 
   it "captures maximized window by window title" do
@@ -120,25 +120,27 @@ describe "win32-screenshot" do
   it "doesn't allow to capture area of the window with negative coordinates" do
     title = /calculator/i
     lambda {Win32::Screenshot.window_area(title, 0, 0, -1, 100) {|width, height, bmp| check_image('calc2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid! cannot have any less than zero")
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
 
   it "doesn't allow to capture area of the window if coordinates are the same" do
     title = /calculator/i
     lambda {Win32::Screenshot.window_area(title, 10, 0, 10, 20) {|width, height, bmp| check_image('calc4')}}.
-            should raise_exception("specified coordinates (10, 0, 10, 20) are invalid! cannot have x1 > x2 or y1 > y2")
+            should raise_exception("specified coordinates (10, 0, 10, 20) are invalid - cannot have x1 > x2 or y1 > y2!")
   end
 
   it "doesn't allow to capture area of the window if second coordinate is smaller than first one" do
     title = /calculator/i
     lambda {Win32::Screenshot.window_area(title, 0, 10, 10, 9) {|width, height, bmp| check_image('calc5')}}.
-            should raise_exception("specified coordinates (0, 10, 10, 9) are invalid! cannot have x1 > x2 or y1 > y2")
+            should raise_exception("specified coordinates (0, 10, 10, 9) are invalid - cannot have x1 > x2 or y1 > y2!")
   end
 
   it "doesn't allow to capture area of the window with too big coordinates" do
     title = /calculator/i
-    lambda {Win32::Screenshot.window_area(title, 0, 0, 10, 10000) {|width, height, bmp| check_image('calc3')}}.
-            should raise_exception("specified coordinates (0, 0, 10, 10000) are invalid! max is 212,264")
+    hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+    dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+    lambda {Win32::Screenshot.window_area(title, 0, 0, 10, 1000) {|width, height, bmp| check_image('calc3')}}.
+            should raise_exception("specified coordinates (0, 0, 10, 1000) are invalid - maximum are x2=#{dimensions[2]} and y2=#{dimensions[3]}!")
   end
 
   it "captures by window with handle" do
@@ -164,14 +166,14 @@ describe "win32-screenshot" do
   it "doesn't allow to capture area of the window with handle with invalid coordinates" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
     lambda {Win32::Screenshot.hwnd_area(hwnd, 0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid! cannot have any less than zero")
+            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
   
   it "captures based on coordinates" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
     bmp1 = bmp2 = nil
-    Win32::Screenshot.hwnd_area(hwnd, 100, 100, 170, 220) do |width, height, bmp|; bmp1 = bmp; end
-    Win32::Screenshot.hwnd_area(hwnd, 0, 0, 70, 120) do |width, height, bmp|; bmp2 = bmp; end
+    Win32::Screenshot.hwnd_area(hwnd, 100, 100, 170, 180) do |width, height, bmp|; bmp1 = bmp; end
+    Win32::Screenshot.hwnd_area(hwnd, 0, 0, 70, 80) do |width, height, bmp|; bmp2 = bmp; end
     bmp1.length.should == bmp2.length
     bmp1.should_not == bmp2
   end
