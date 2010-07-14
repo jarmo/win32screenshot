@@ -76,7 +76,7 @@ module Win32
           true
         end
       end
-
+      
       module_function
 
       class WindowStruct < FFI::Struct
@@ -90,6 +90,20 @@ module Win32
         window[:title] = window_title
         enum_windows(EnumWindowCallback, window.to_ptr)
         window[:hwnd] == 0 ? nil : window[:hwnd] 
+      end
+      
+      def list_window_titles
+        out = []
+        out_proc = Proc.new do |hwnd, param|
+          title_length = window_text_length(hwnd) + 1
+          title = FFI::MemoryPointer.new :char, title_length
+          window_text(hwnd, title, title_length)
+          out << title.read_string
+          true
+        end
+        
+        enum_windows(out_proc, nil)
+        out
       end
 
       def prepare_window(hwnd, pause)

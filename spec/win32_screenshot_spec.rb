@@ -177,6 +177,12 @@ describe "win32-screenshot" do
     bmp1.length.should == bmp2.length
     bmp1.should_not == bmp2
   end
+  
+  it "enumerates the available windows" do
+    got = Win32::Screenshot::BitmapMaker.list_window_titles
+    got.length.should be > 1
+    got[0].should be_a String
+  end    
 
   after :all do
     Process.kill 9, @notepad
