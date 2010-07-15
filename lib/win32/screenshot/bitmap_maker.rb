@@ -86,6 +86,9 @@ module Win32
 
       def hwnd(window_title)
         window = WindowStruct.new
+        unless window_title.is_a? Regexp
+          window_title = Regexp.escape(window_title.to_s)
+        end
         window_title = FFI::MemoryPointer.from_string(window_title.to_s)
         window[:title] = window_title
         enum_windows(EnumWindowCallback, window.to_ptr)

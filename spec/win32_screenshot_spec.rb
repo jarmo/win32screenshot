@@ -183,6 +183,10 @@ describe "win32-screenshot" do
     got.length.should be > 1
     got[0].should be_a String
   end    
+  
+  it "allow for parentheses in window names" do
+    Win32::Screenshot::BitmapMaker.hwnd("VLC (Direct")
+  end
 
   after :all do
     Process.kill 9, @notepad
