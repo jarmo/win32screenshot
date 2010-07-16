@@ -1,6 +1,10 @@
 = 0.0.6 2010-XX-XX
 * Trying to bring window to the foreground more aggressively (Roger Pack)
-* Minor bug fixes with using gdi32.dll BitBlt (Roger Pack)
+* Added method #window_titles which enumerates all windows and returns their titles as an Array (Roger Pack)
+
+== Bug Fixes:
+* Fixed usages of gdi32.dll BitBlt (Roger Pack)
+* It was impossible to specify correctly window titles with regular expressions special characters in them (Roger Pack)
 
 = 0.0.5 2010-07-07
 * Added method window_area for capturing specified area of the window instead of full window (Jarmo Pertman)
