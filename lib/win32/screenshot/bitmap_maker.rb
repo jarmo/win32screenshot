@@ -38,11 +38,11 @@ module Win32
                       [:long, :long, :bool], :bool
       attach_function :set_foreground_window, :SetForegroundWindow,
                       [:long], :bool
-      attach_function :bring_window_to_top, :BringWindowToTop, 
-                       [:long], :bool                
-      attach_function :set_active_window, :SetActiveWindow, 
-                       [:long], :long
-      
+      attach_function :bring_window_to_top, :BringWindowToTop,
+                      [:long], :bool
+      attach_function :set_active_window, :SetActiveWindow,
+                      [:long], :long
+
 
       # gdi32.dll
       attach_function :create_compatible_dc, :CreateCompatibleDC,
@@ -76,7 +76,7 @@ module Win32
           true
         end
       end
-      
+
       module_function
 
       class WindowStruct < FFI::Struct
@@ -86,27 +86,29 @@ module Win32
 
       def hwnd(window_title)
         window = WindowStruct.new
-        unless window_title.is_a? Regexp
+        unless window_title.is_a?(Regexp)
           window_title = Regexp.escape(window_title.to_s)
+        else
+          window_title = window_title.to_s
         end
-        window_title = FFI::MemoryPointer.from_string(window_title.to_s)
+        window_title = FFI::MemoryPointer.from_string(window_title)
         window[:title] = window_title
         enum_windows(EnumWindowCallback, window.to_ptr)
-        window[:hwnd] == 0 ? nil : window[:hwnd] 
+        window[:hwnd] == 0 ? nil : window[:hwnd]
       end
-      
-      def list_window_titles
-        out = []
-        out_proc = Proc.new do |hwnd, param|
+
+      def window_titles
+        titles = []
+        window_callback = Proc.new do |hwnd, param|
           title_length = window_text_length(hwnd) + 1
           title = FFI::MemoryPointer.new :char, title_length
           window_text(hwnd, title, title_length)
-          out << title.read_string
+          titles << title.read_string
           true
         end
-        
-        enum_windows(out_proc, nil)
-        out
+
+        enum_windows(window_callback, nil)
+        titles
       end
 
       def prepare_window(hwnd, pause)
@@ -128,7 +130,7 @@ module Win32
           bring_window_to_top(hwnd)
           # and just in case...
           foreground_thread = window_thread_process_id(foreground_window, nil)
-          other_thread = window_thread_process_id(hwnd, nil)          
+          other_thread = window_thread_process_id(hwnd, nil)
           attach_thread_input(foreground_thread, other_thread, true) unless other_thread == foreground_thread
           set_foreground_window(hwnd)
           set_active_window(hwnd)

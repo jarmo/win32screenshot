@@ -179,13 +179,14 @@ describe "win32-screenshot" do
   end
   
   it "enumerates the available windows" do
-    got = Win32::Screenshot::BitmapMaker.list_window_titles
-    got.length.should be > 1
-    got[0].should be_a String
+    all_titles = Win32::Screenshot::BitmapMaker.window_titles
+    all_titles.length.should be > 1
+    all_titles[0].should be_a(String)
+    all_titles.should include("Calculator")
   end    
   
-  it "allow for parentheses in window names" do
-    Win32::Screenshot::BitmapMaker.hwnd("VLC (Direct")
+  it "allows window titles to include regular expressions special characters" do
+    lambda {Win32::Screenshot::BitmapMaker.hwnd("Window title *^$?([.")}.should_not raise_exception
   end
 
   after :all do
