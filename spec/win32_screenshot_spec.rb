@@ -180,8 +180,11 @@ describe "win32-screenshot" do
   it "enumerates the available windows" do
     all_titles = Win32::Screenshot::BitmapMaker.window_titles
     all_titles.length.should be > 1
-    all_titles[0].should be_a(String)
-    all_titles.should include("Calculator")
+    all_titles[0].should be_an(Array)
+    all_titles[0][0].should be_a(String)
+    all_titles[0][1].should be_a(Fixnum)
+    
+    all_titles.map{|title, hwnd| title}.should include("Calculator")
   end    
   
   it "allows window titles to include regular expressions special characters" do

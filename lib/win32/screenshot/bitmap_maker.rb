@@ -103,7 +103,7 @@ module Win32
           title_length = window_text_length(hwnd) + 1
           title = FFI::MemoryPointer.new :char, title_length
           window_text(hwnd, title, title_length)
-          titles << title.read_string
+          titles << [title.read_string, hwnd]
           true
         end
 
