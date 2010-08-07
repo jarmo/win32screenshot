@@ -1,4 +1,5 @@
-require 'win32/screenshot/bitmap_maker'
+require File.dirname(__FILE__) + '/screenshot/bitmap_maker'
+require File.dirname(__FILE__) + '/util'
 
 module Win32
   # Captures screenshots with Ruby on Windows
@@ -44,7 +45,7 @@ module Win32
       # captures window with a *title_query* and waits *pause* (by default is 0.5)
       # seconds after trying to set window to the foreground
       def window(title_query, pause=0.5, &proc)
-        hwnd = window_hwnd(title_query)
+        hwnd = Util.window_hwnd(title_query)
         hwnd(hwnd, pause, &proc)
       end
 
@@ -52,7 +53,7 @@ module Win32
       # where *x1* and *y1* are 0 in the upper left corner and
       # *x2* specifies the width and *y2* the height of the area to be captured
       def window_area(title_query, x1, y1, x2, y2, pause=0.5, &proc)
-        hwnd = window_hwnd(title_query)
+        hwnd = Util.window_hwnd(title_query)
         hwnd_area(hwnd, x1, y1, x2, y2, pause, &proc)
       end
 
@@ -73,12 +74,6 @@ module Win32
 
       private
 
-      def window_hwnd(title_query)
-        hwnd = BitmapMaker.hwnd(title_query)
-        raise "window with title '#{title_query}' was not found!" unless hwnd
-        hwnd
-      end
-
       def validate_coordinates(hwnd, *coords)
         specified_coordinates = coords.join(', ')
         if coords.any? {|c| c < 0}
@@ -89,7 +84,7 @@ module Win32
           raise "specified coordinates (#{specified_coordinates}) are invalid - cannot have x1 > x2 or y1 > y2!"
         end
 
-        x1_always_zero, y1_always_zero, max_x2, max_y2 = BitmapMaker.dimensions_for(hwnd)
+        x1_always_zero, y1_always_zero, max_x2, max_y2 = Util.dimensions_for(hwnd)
         if x2 > max_x2 || y2 > max_y2
           raise "specified coordinates (#{specified_coordinates}) are invalid - maximum are x2=#{max_x2} and y2=#{max_y2}!"
         end

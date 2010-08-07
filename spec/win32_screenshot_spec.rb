@@ -5,7 +5,7 @@ describe "win32-screenshot" do
   
   before :all do
     @notepad = IO.popen("notepad").pid
-    @iexplore = IO.popen("'c:/program files/Internet Explorer/iexplore' about:blank").pid
+    @iexplore = IO.popen("\"c:/program files/Internet Explorer/iexplore\" about:blank").pid
     @calc = IO.popen("calc").pid
     wait_for_programs_to_open
     cleanup
@@ -15,7 +15,7 @@ describe "win32-screenshot" do
     Win32::Screenshot.foreground do |width, height, bmp|
       check_image(bmp, 'foreground')
       hwnd = Win32::Screenshot::BitmapMaker.foreground_window
-      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -38,7 +38,7 @@ describe "win32-screenshot" do
     Win32::Screenshot.desktop do |width, height, bmp|
       check_image(bmp, 'desktop')
       hwnd = Win32::Screenshot::BitmapMaker.desktop_window
-      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -63,7 +63,7 @@ describe "win32-screenshot" do
     Win32::Screenshot.window(title) do |width, height, bmp|
       check_image(bmp, 'iexplore')
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -75,7 +75,7 @@ describe "win32-screenshot" do
     Win32::Screenshot.window(title) do |width, height, bmp|
       check_image(bmp, 'calc')
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -90,7 +90,7 @@ describe "win32-screenshot" do
       # screenshot doesn't include titlebar and the size
       # varies between different themes and Windows versions
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -108,7 +108,7 @@ describe "win32-screenshot" do
   it "captures whole window if window size is specified as coordinates" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-    dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+    dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
     Win32::Screenshot.window_area(title, 0, 0, dimensions[2], dimensions[3]) do |width, height, bmp|
       check_image(bmp, 'calc_area_full_window')
       width.should == dimensions[2]
@@ -137,7 +137,7 @@ describe "win32-screenshot" do
   it "doesn't allow to capture area of the window with too big coordinates" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-    dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+    dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
     lambda {Win32::Screenshot.window_area(title, 0, 0, 10, 1000) {|width, height, bmp| check_image('calc3')}}.
             should raise_exception("specified coordinates (0, 0, 10, 1000) are invalid - maximum are x2=#{dimensions[2]} and y2=#{dimensions[3]}!")
   end
@@ -147,7 +147,7 @@ describe "win32-screenshot" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
     Win32::Screenshot.hwnd(hwnd) do |width, height, bmp|
       check_image(bmp, 'calc_hwnd')
-      dimensions = Win32::Screenshot::BitmapMaker.dimensions_for(hwnd)
+      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
       width.should == dimensions[2]
       height.should == dimensions[3]
     end
@@ -178,7 +178,7 @@ describe "win32-screenshot" do
   end
   
   it "enumerates the available windows" do
-    all_titles = Win32::Screenshot::BitmapMaker.window_titles
+    all_titles = Win32::Screenshot::Util.all_windows
     all_titles.length.should be > 1
     all_titles[0].should be_an(Array)
     all_titles[0][0].should be_a(String)
