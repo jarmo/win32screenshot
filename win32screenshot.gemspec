@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{win32screenshot}
-  s.version = "0.0.5"
+  s.version = "0.0.6"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jarmo Pertman", "Aslak Helles\303\270y"]
-  s.date = %q{2010-07-07}
+  s.date = %q{2010-08-07}
   s.description = %q{Capture Screenshots on Windows with Ruby}
   s.email = ["jarmo.p@gmail.com", "aslak.hellesoy@gmail.com"]
   s.extra_rdoc_files = [
@@ -26,10 +26,12 @@ Gem::Specification.new do |s|
      "VERSION",
      "lib/win32/screenshot.rb",
      "lib/win32/screenshot/bitmap_maker.rb",
-     "lib/win32screenshot.rb",
+     "lib/win32/util.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
-     "spec/win32_screenshot_spec.rb"
+     "spec/win32_screenshot_spec.rb",
+     "spec/win32_screenshot_util_spec.rb",
+     "win32screenshot.gemspec"
   ]
   s.homepage = %q{http://github.com/jarmo/win32screenshot}
   s.rdoc_options = ["--main", "README.rdoc"]
@@ -38,7 +40,8 @@ Gem::Specification.new do |s|
   s.summary = %q{Capture Screenshots on Windows with Ruby}
   s.test_files = [
     "spec/spec_helper.rb",
-     "spec/win32_screenshot_spec.rb"
+     "spec/win32_screenshot_spec.rb",
+     "spec/win32_screenshot_util_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
