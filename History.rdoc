@@ -5,6 +5,7 @@
   - window_title(hwnd) - returns title of the window for specified handle (Jarmo Pertman)
   - window_hwnd(title_query) - returns handle of the window for specified title (Jarmo Pertman)
   - dimensions_for(hwnd) - returns a width and height for a window with specified handle (Jarmo Pertman)
+* Removed a file 'win32screenshot.rb' which was solely used for displaying deprecation warnings for versions older than 0.0.4. Make sure than from now on all require statements require 'win32/screenshot'!
 
 == Bug Fixes:
 * Fixed usages of gdi32.dll BitBlt (Roger Pack)
