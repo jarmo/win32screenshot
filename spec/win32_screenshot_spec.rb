@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe "win32-screenshot" do
+describe Win32::Screenshot do
   include SpecHelper    
   
   before :all do
@@ -177,17 +177,7 @@ describe "win32-screenshot" do
     bmp1.should_not == bmp2
   end
   
-  it "enumerates the available windows" do
-    all_titles = Win32::Screenshot::Util.all_windows
-    all_titles.length.should be > 1
-    all_titles[0].should be_an(Array)
-    all_titles[0][0].should be_a(String)
-    all_titles[0][1].should be_a(Fixnum)
-    
-    all_titles.map{|title, hwnd| title}.should include("Calculator")
-  end    
-  
-  it "allows window titles to include regular expressions special characters" do
+  it "allows window titles to include regular expressions' special characters" do
     lambda {Win32::Screenshot::BitmapMaker.hwnd("Window title *^$?([.")}.should_not raise_exception
   end
 

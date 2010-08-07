@@ -41,12 +41,21 @@ module SpecHelper
 
   def wait_for_programs_to_open
     until Win32::Screenshot::BitmapMaker.hwnd(/Internet Explorer/) &&
-            Win32::Screenshot::BitmapMaker.hwnd(/Notepad/) &&
-            Win32::Screenshot::BitmapMaker.hwnd(/Calculator/)
+            Win32::Screenshot::BitmapMaker.hwnd(/Notepad/)
+      sleep 0.1
+    end
+    wait_for_calculator_to_open
+
+    # just in case of slow PC
+    sleep 8
+  end
+
+  def wait_for_calculator_to_open
+    until Win32::Screenshot::BitmapMaker.hwnd(/Calculator/)
       sleep 0.1
     end
     # just in case of slow PC
-    sleep 10
+    sleep 2
   end
 
   def maximize title
