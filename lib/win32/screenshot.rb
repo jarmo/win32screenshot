@@ -84,9 +84,9 @@ module Win32
           raise "specified coordinates (#{specified_coordinates}) are invalid - cannot have x1 > x2 or y1 > y2!"
         end
 
-        x1_always_zero, y1_always_zero, max_x2, max_y2 = Util.dimensions_for(hwnd)
-        if x2 > max_x2 || y2 > max_y2
-          raise "specified coordinates (#{specified_coordinates}) are invalid - maximum are x2=#{max_x2} and y2=#{max_y2}!"
+        max_width, max_height = Util.dimensions_for(hwnd)
+        if x2 > max_width || y2 > max_height
+          raise "specified coordinates (#{specified_coordinates}) are invalid - maximum are x2=#{max_width} and y2=#{max_height}!"
         end
       end
     end

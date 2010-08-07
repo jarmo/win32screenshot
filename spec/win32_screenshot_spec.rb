@@ -15,9 +15,7 @@ describe Win32::Screenshot do
     Win32::Screenshot.foreground do |width, height, bmp|
       check_image(bmp, 'foreground')
       hwnd = Win32::Screenshot::BitmapMaker.foreground_window
-      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
-      width.should == dimensions[2]
-      height.should == dimensions[3]
+      [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 
@@ -38,9 +36,7 @@ describe Win32::Screenshot do
     Win32::Screenshot.desktop do |width, height, bmp|
       check_image(bmp, 'desktop')
       hwnd = Win32::Screenshot::BitmapMaker.desktop_window
-      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
-      width.should == dimensions[2]
-      height.should == dimensions[3]
+      [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 
@@ -63,9 +59,7 @@ describe Win32::Screenshot do
     Win32::Screenshot.window(title) do |width, height, bmp|
       check_image(bmp, 'iexplore')
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
-      width.should == dimensions[2]
-      height.should == dimensions[3]
+      [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 
@@ -75,9 +69,7 @@ describe Win32::Screenshot do
     Win32::Screenshot.window(title) do |width, height, bmp|
       check_image(bmp, 'calc')
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
-      width.should == dimensions[2]
-      height.should == dimensions[3]
+      [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 
@@ -90,9 +82,7 @@ describe Win32::Screenshot do
       # screenshot doesn't include titlebar and the size
       # varies between different themes and Windows versions
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
-      width.should == dimensions[2]
-      height.should == dimensions[3]
+      [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 
@@ -108,11 +98,11 @@ describe Win32::Screenshot do
   it "captures whole window if window size is specified as coordinates" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-    dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
-    Win32::Screenshot.window_area(title, 0, 0, dimensions[2], dimensions[3]) do |width, height, bmp|
+    expected_width, expected_height = Win32::Screenshot::Util.dimensions_for(hwnd)
+    Win32::Screenshot.window_area(title, 0, 0, expected_width, expected_height) do |width, height, bmp|
       check_image(bmp, 'calc_area_full_window')
-      width.should == dimensions[2]
-      height.should == dimensions[3]
+      width.should == expected_width
+      height.should == expected_height
     end
   end
 
@@ -137,9 +127,9 @@ describe Win32::Screenshot do
   it "doesn't allow to capture area of the window with too big coordinates" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-    dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
+    expected_width, expected_height = Win32::Screenshot::Util.dimensions_for(hwnd)
     lambda {Win32::Screenshot.window_area(title, 0, 0, 10, 1000) {|width, height, bmp| check_image('calc3')}}.
-            should raise_exception("specified coordinates (0, 0, 10, 1000) are invalid - maximum are x2=#{dimensions[2]} and y2=#{dimensions[3]}!")
+            should raise_exception("specified coordinates (0, 0, 10, 1000) are invalid - maximum are x2=#{expected_width} and y2=#{expected_height}!")
   end
 
   it "captures by window with handle" do
@@ -147,9 +137,7 @@ describe Win32::Screenshot do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
     Win32::Screenshot.hwnd(hwnd) do |width, height, bmp|
       check_image(bmp, 'calc_hwnd')
-      dimensions = Win32::Screenshot::Util.dimensions_for(hwnd)
-      width.should == dimensions[2]
-      height.should == dimensions[3]
+      [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 

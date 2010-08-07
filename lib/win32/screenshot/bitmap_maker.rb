@@ -122,8 +122,8 @@ module Win32
         end
 
         def capture_all(hwnd, &proc)
-          x1, y1, x2, y2 = Util.dimensions_for(hwnd)
-          capture_area(hwnd, x1, y1, x2, y2, &proc)
+          width, height = Util.dimensions_for(hwnd)
+          capture_area(hwnd, 0, 0, width, height, &proc)
         end
 
         SRCCOPY = 0x00CC0020

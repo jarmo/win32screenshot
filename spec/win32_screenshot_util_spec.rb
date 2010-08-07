@@ -27,11 +27,9 @@ describe Win32::Screenshot::Util do
   end
 
   it ".dimensions_for window handle returns dimensions of the window in pixels" do
-    x1, y1, x2, y2 = Win32::Screenshot::Util.dimensions_for(@calc_hwnd)
-    x1.should == 0
-    y1.should == 0
-    x2.should be > 100
-    y2.should be > 100
+    width, height = Win32::Screenshot::Util.dimensions_for(@calc_hwnd)
+    width.should be > 100
+    height.should be > 100
   end
   
   after :all do

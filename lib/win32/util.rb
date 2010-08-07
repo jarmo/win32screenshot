@@ -30,7 +30,8 @@ module Win32
         def dimensions_for(hwnd)
           rect = [0, 0, 0, 0].pack('L4')
           BitmapMaker.client_rect(hwnd, rect)
-          x1, y1, x2, y2 = rect.unpack('L4')
+          _, _, width, height = rect.unpack('L4')
+          return width, height
         end
 
       end
