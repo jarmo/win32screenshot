@@ -71,6 +71,25 @@ other formats like png.
     File.open("picture10.png", "wb") {|file| file.puts png}
   end
 
+  #
+  # Win32::Screenshot has also some utility methods which can be used for various needs
+
+  # enumerate all windows and return their titles and handles
+  Win32::Screenshot::Util.all_windows # => [["title1", 2345], ["title2", 3456]]
+
+  # retrieve window title for the specified window handle
+  Win32::Screenshot::Util.window_title(2345) # => "title1"
+
+  # retrieve window handle for the specified title
+  Win32::Screenshot::Util.window_hwnd("title1") # => 2345
+
+  # title can be also a regular expression with first matching window retrieved
+  Win32::Screenshot::Util.window_hwnd(/tit.*1/) # => 2345
+
+  # retrive dimensions of a window with specified handle in an Array of [width, height]
+  # might be useful for using with different capture_area methods
+  Win32::Screenshot::Util.dimensions_for(2345) # => [100, 200]
+
 == Copyright
 
 Copyright (c) 2010 Jarmo Pertman, Aslak Hellesøy. See LICENSE for details.

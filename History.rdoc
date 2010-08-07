@@ -1,6 +1,10 @@
-= 0.0.6 2010-XX-XX
+= 0.0.6 2010-08-07
 * Trying to bring window to the foreground more aggressively (Roger Pack)
-* Added method #window_titles which enumerates all windows and returns their titles as an Array (Roger Pack)
+* Added utility class Win32::Screenshot.Util with some helper methods not related directly with taking of the screenshots:
+  - all_windows - enumerates all windows and returns their titles and window handles as an Array (Roger Pack)
+  - window_title(hwnd) - returns title of the window for specified handle (Jarmo Pertman)
+  - window_hwnd(title_query) - returns handle of the window for specified title (Jarmo Pertman)
+  - dimensions_for(hwnd) - returns a width and height for a window with specified handle (Jarmo Pertman)
 
 == Bug Fixes:
 * Fixed usages of gdi32.dll BitBlt (Roger Pack)
