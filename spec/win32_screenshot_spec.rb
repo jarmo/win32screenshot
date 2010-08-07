@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe Win32::Screenshot do
-  include SpecHelper    
-  
+  include SpecHelper
+
   before :all do
     @notepad = IO.popen("notepad").pid
     @iexplore = IO.popen("\"c:/program files/Internet Explorer/iexplore\" about:blank").pid
@@ -167,7 +167,7 @@ describe Win32::Screenshot do
     lambda {Win32::Screenshot.hwnd_area(hwnd, 0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
             should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
-  
+
   it "captures based on coordinates" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
     bmp1 = bmp2 = nil
@@ -176,9 +176,13 @@ describe Win32::Screenshot do
     bmp1.length.should == bmp2.length
     bmp1.should_not == bmp2
   end
-  
+
   it "allows window titles to include regular expressions' special characters" do
     lambda {Win32::Screenshot::BitmapMaker.hwnd("Window title *^$?([.")}.should_not raise_exception
+  end
+
+  it "raises an 'no block given' Exception if no block was given" do
+    lambda {Win32::Screenshot.foreground}.should raise_exception(LocalJumpError)
   end
 
   after :all do
