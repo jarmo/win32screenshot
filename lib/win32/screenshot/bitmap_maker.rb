@@ -129,7 +129,7 @@ module Win32
         SRCCOPY = 0x00CC0020
         DIB_RGB_COLORS = 0
 
-        def capture_area(hwnd, x1, y1, x2, y2, &proc)
+        def capture_area(hwnd, x1, y1, x2, y2) # block
           hScreenDC = dc(hwnd)
           w = x2-x1
           h = y2-y1
@@ -155,7 +155,7 @@ module Win32
           ].pack('SLSSL')
 
           bmp_data = bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size)
-          proc.call(w, h, bmp_data)
+          yield(w, h, bmp_data)
         ensure
           lpvpxldata.free
           delete_object(hmemBM)
