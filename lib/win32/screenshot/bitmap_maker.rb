@@ -9,7 +9,6 @@ module Win32
 
         ffi_lib 'user32', 'gdi32'
         ffi_convention :stdcall
-
         callback :enum_callback, [:long, :pointer], :bool
 
         # user32.dll
@@ -64,7 +63,7 @@ module Win32
                         [:long, :long], :int
 
 
-        EnumWindowCallback = Proc.new do |hwnd, param|
+        EnumWindowCallback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
           searched_window = WindowStruct.new param
           title = Util.window_title(hwnd)
           if title =~ Regexp.new(searched_window[:title].read_string) && window_visible(hwnd)

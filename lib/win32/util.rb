@@ -5,7 +5,7 @@ module Win32
 
         def all_windows
           titles = []
-          window_callback = Proc.new do |hwnd, param|
+          window_callback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
             titles << [window_title(hwnd), hwnd]
             true
           end

@@ -5,7 +5,7 @@ describe Win32::Screenshot do
 
   before :all do
     @notepad = IO.popen("notepad").pid
-    @iexplore = Dir.chdir("c:/program files/Internet Explorer") do; p Dir.pwd; IO.popen("iexplore about:blank").pid; end
+    @iexplore = Dir.chdir("c:/program files/Internet Explorer") do; IO.popen(".\\iexplore about:blank").pid; end
     @calc = IO.popen("calc").pid
     wait_for_programs_to_open
     cleanup
