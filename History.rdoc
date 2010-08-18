@@ -1,3 +1,6 @@
+= 0.0.7 2010-08-18
+* Supports now fully JRuby, 1.9.1 and 1.9.2 MRI!
+
 = 0.0.6 2010-08-07
 * Trying to bring window to the foreground more aggressively (Roger Pack)
 * Added utility class Win32::Screenshot.Util with some helper methods not related directly with taking of the screenshots:
