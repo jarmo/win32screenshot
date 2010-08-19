@@ -65,12 +65,14 @@ module Win32
         attach_function :release_dc, :ReleaseDC,
                         [:long, :long], :int
 
-        
-
 
         EnumWindowCallback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
           searched_window = WindowStruct.new param
-          title = Util.window_title(hwnd)
+          if(searched_window[:search_class] != 0)
+            title = Util.window_class(hwnd)
+          else
+            title = Util.window_title(hwnd)
+          end
           if title =~ Regexp.new(searched_window[:title].read_string) && window_visible(hwnd)
             searched_window[:hwnd] = hwnd
             false
@@ -81,10 +83,11 @@ module Win32
 
         class WindowStruct < FFI::Struct
           layout :title, :pointer,
-                 :hwnd, :long
+                 :hwnd, :long,
+                 :search_class, :char # boolean
         end
 
-        def hwnd(window_title)
+        def hwnd(window_title, search_class = nil)
           window = WindowStruct.new
           unless window_title.is_a?(Regexp)
             window_title = Regexp.escape(window_title.to_s)
@@ -93,10 +96,11 @@ module Win32
           end
           window_title = FFI::MemoryPointer.from_string(window_title)
           window[:title] = window_title
+          window[:search_class] = search_class ? 1 : 0
           enum_windows(EnumWindowCallback, window.to_ptr)
           window[:hwnd] == 0 ? nil : window[:hwnd]
         end
-
+        
         def prepare_window(hwnd, pause)
           restore(hwnd) if minimized(hwnd)
           set_foreground(hwnd)

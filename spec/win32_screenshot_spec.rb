@@ -72,6 +72,10 @@ describe Win32::Screenshot do
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
+  
+  it "can also search by window class name" do
+    Win32::Screenshot::BitmapMaker.hwnd(/calculator/i).should == Win32::Screenshot::BitmapMaker.hwnd(/calcframe/i, true)
+  end
 
   it "captures small windows" do
     title = /Notepad/
@@ -140,7 +144,7 @@ describe Win32::Screenshot do
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
-
+  
   it "captures area of the window with handle" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
     Win32::Screenshot.hwnd_area(hwnd, 30, 30, 100, 150) do |width, height, bmp|
