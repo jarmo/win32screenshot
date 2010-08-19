@@ -23,7 +23,7 @@ module Win32
         
         def window_class hwnd
           title = FFI::MemoryPointer.new :char, 100
-          BitmapMaker.class_name(hwnd, title, 100)
+          BitmapMaker.class_name(hwnd, title, 99)
           title.read_string
         end
 
