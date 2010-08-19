@@ -174,8 +174,10 @@ describe Win32::Screenshot do
   end
 
   after :all do
-    Process.kill 9, @notepad
-    Process.kill 9, @iexplore rescue nil # allow for a pre-existing IE to have been used.
-    Process.kill 9, @calc
+    for name in [/calculator/i,  /Notepad/, /Internet Explorer/] do
+      # kill them in a jruby friendly way
+      pid = Win32::Screenshot::Util.window_process_id(Win32::Screenshot::Util.window_hwnd(name))
+      system("taskkill /PID #{pid}")
+    end
   end
 end
