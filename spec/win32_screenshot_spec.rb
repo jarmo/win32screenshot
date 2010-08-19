@@ -74,7 +74,14 @@ describe Win32::Screenshot do
   end
   
   it "can also search by window class name" do
-    Win32::Screenshot::BitmapMaker.hwnd(/calculator/i).should == Win32::Screenshot::BitmapMaker.hwnd(/calcframe/i, true)
+    good_pid = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
+    good_pid.should_not be_nil
+    good_pid.should == Win32::Screenshot::BitmapMaker.hwnd(/calcframe/i, true)
+  end
+  
+  it "can find sub windows as well" do
+    # search for an IE sub-window by class (doesn't have text)
+    Win32::Screenshot::BitmapMaker.hwnd(/CommandBarClass/i, true).should_not be_nil
   end
 
   it "captures small windows" do

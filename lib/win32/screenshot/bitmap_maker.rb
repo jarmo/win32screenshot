@@ -13,7 +13,9 @@ module Win32
 
         # user32.dll
         attach_function :enum_windows, :EnumWindows,
-                        [:enum_callback, :pointer], :long
+                        [:enum_callback, :pointer], :int
+        attach_function :enum_child_windows, :EnumChildWindows,
+                        [:long, :enum_callback, :pointer], :int
         attach_function :window_text, :GetWindowTextA,
                         [:long, :pointer, :int], :int
         attach_function :window_text_length, :GetWindowTextLengthA,
@@ -77,7 +79,18 @@ module Win32
             searched_window[:hwnd] = hwnd
             false
           else
-            true
+            if(searched_window[:search_class] != 0)
+              # if they're searching for a classname, enumerate children, too
+              enum_child_windows(hwnd, EnumWindowCallback, param)
+              if searched_window[:hwnd] != 0
+                # return early if already discovered
+                false 
+              else
+               true
+              end
+            else
+              true
+            end
           end
         end
 
