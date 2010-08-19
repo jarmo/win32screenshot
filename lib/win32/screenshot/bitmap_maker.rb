@@ -18,6 +18,8 @@ module Win32
                         [:long, :pointer, :int], :int
         attach_function :window_text_length, :GetWindowTextLengthA,
                         [:long], :int
+        attach_function :class_name, :GetClassNameA,
+                         [:long, :pointer, :int], :int
         attach_function :window_visible, :IsWindowVisible,
                         [:long], :bool
         attach_function :dc, :GetDC,

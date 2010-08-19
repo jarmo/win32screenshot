@@ -34,6 +34,10 @@ describe Win32::Screenshot::Util do
     height.should be > 100
   end
   
+  it ".window_class returns classname of a specified window's handle" do
+    Win32::Screenshot::Util.window_class(@calc_hwnd).should == "CalcFrame"
+  end
+  
   after :all do
     # test our hwnd -> pid method
     calc_pid = Win32::Screenshot::Util.window_process_id(@calc_hwnd)

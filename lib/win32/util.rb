@@ -20,6 +20,12 @@ module Win32
           BitmapMaker.window_text(hwnd, title, title_length)
           title.read_string
         end
+        
+        def window_class hwnd
+          title = FFI::MemoryPointer.new :char, 100
+          BitmapMaker.class_name(hwnd, title, 100)
+          title.read_string
+        end
 
         def window_hwnd(title_query)
           hwnd = BitmapMaker.hwnd(title_query)
