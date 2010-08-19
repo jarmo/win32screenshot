@@ -4,6 +4,8 @@ describe Win32::Screenshot::Util do
   include SpecHelper
 
   before :all do
+    # should not have any running calculators yet...
+    proc {Win32::Screenshot::Util.window_hwnd("Calculator") }.should raise_exception("window with title 'Calculator' was not found!")
     @calc = IO.popen("calc").pid
     wait_for_calculator_to_open
     @calc_hwnd = Win32::Screenshot::Util.window_hwnd("Calculator")
@@ -33,6 +35,9 @@ describe Win32::Screenshot::Util do
   end
   
   after :all do
-    Process.kill 9, @calc
+    # test our hwnd -> pid method
+    calc_pid = Win32::Screenshot::Util.window_process_id(@calc_hwnd)
+    system("taskkill /PID #{calc_pid}")
+    proc {Win32::Screenshot::Util.window_hwnd("Calculator") }.should raise_exception("window with title 'Calculator' was not found!")
   end
 end

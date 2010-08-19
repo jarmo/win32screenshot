@@ -33,6 +33,10 @@ module Win32
           _, _, width, height = rect.unpack('L4')
           return width, height
         end
+        
+        def window_process_id(hwnd)
+          BitmapMaker.get_process_id_from_hwnd(hwnd)
+        end
 
       end
     end

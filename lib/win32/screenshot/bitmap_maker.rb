@@ -42,7 +42,8 @@ module Win32
                         [:long], :bool
         attach_function :set_active_window, :SetActiveWindow,
                         [:long], :long
-
+        attach_function :GetWindowThreadProcessId, [:ulong, :pointer], 
+                        :uint
 
         # gdi32.dll
         attach_function :create_compatible_dc, :CreateCompatibleDC,
@@ -61,6 +62,8 @@ module Win32
                         [:long], :bool
         attach_function :release_dc, :ReleaseDC,
                         [:long, :long], :int
+
+        
 
 
         EnumWindowCallback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
@@ -118,6 +121,12 @@ module Win32
             bring_window_to_top(hwnd)
             attach_thread_input(foreground_thread, other_thread, false) unless other_thread == foreground_thread
           end
+        end
+        
+        def get_process_id_from_hwnd hwnd
+          out = FFI::MemoryPointer.new(:uint)
+          GetWindowThreadProcessId(hwnd, out)
+          out.get_uint32(0) # read_uint
         end
 
         def capture_all(hwnd, &proc)
