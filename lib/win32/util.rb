@@ -1,5 +1,3 @@
-require 'ostruct'
-
 module Win32
   class Screenshot
     class Util
@@ -16,27 +14,38 @@ module Win32
           titles
         end
         
-        def windows_hierarchy_with_info
+        # just returns a long list of hwnd's...
+        def windows_hierarchy with_info = false
           
           all = {}
           desktop_hwnd = BitmapMaker.desktop_window
-          hierarchy 
+          root = {:hwnd => desktop_hwnd, :children => []}
+          root.merge!(get_info(desktop_hwnd)) if with_info
+          parents = []
+          parents << root
           window_callback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
-            titles << [window_title(hwnd), hwnd]
+            # this is a child of the most recent parent
+            myself = {:hwnd => hwnd, :children => []}
+            myself.merge!(get_info(hwnd)) if with_info
+            parents[-1][:children] << myself
+            parents << myself
+            if !all[hwnd]
+              all[hwnd] = true
+              BitmapMaker.enum_child_windows(hwnd, window_callback, nil)
+            end
+            
+            parents.pop
             true
           end
-
-          BitmapMaker.enum_windows(window_callback, nil)
-          #enum_child_windows(hwnd, EnumWindowCallback, param)        
-          titles
-        
+          BitmapMaker.enum_child_windows(desktop_hwnd, window_callback, nil)
+          root
         end
         
         def get_info hwnd
           {:title => window_title(hwnd), 
           :class => window_class(hwnd), 
           :dimensions => dimensions_for(hwnd), 
-          :coordinates => location_of(hwnd)
+          :starting_coordinates => location_of(hwnd)
           }
         end  
         

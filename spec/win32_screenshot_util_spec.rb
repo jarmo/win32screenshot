@@ -42,23 +42,28 @@ describe Win32::Screenshot::Util do
     desktop_hwnd = Win32::Screenshot::BitmapMaker.desktop_window
     info = Win32::Screenshot::Util.get_info desktop_hwnd
     info.should be_a Hash
-    info.keys.sort.should == [:title, :class, :dimensions, :coordinates].sort
+    info.keys.sort.should == [:title, :class, :dimensions, :starting_coordinates].sort
   end
   
-  it ".window_hierarchies returns fully featured hierarchy of hwnds" do
-    a = Win32::Screenshot::Util.all_window_hierarchy
+  it ".windows_hierarchy returns hwnds" do
+    a = Win32::Screenshot::Util.windows_hierarchy
     # should have root as "desktop"
     # though in reality some windows might not be descendants of the desktop 
     # (see the WinCheat source which discusses this further)
     # but we don't worry about that edge case yet
     a.should be_a Hash
-    a[:title].should == 'desktop'
-    a[:children].should be_a Hash
-    a[:children].length.should be > 0 
-    sorted = [:children, :class, :coordinates, :dimensions, :hwnd, :title]    
-    a.keys.sort.should == sorted
-    # children should also have same keys
-    a[:children].to_a[0].keys.sort.should == sorted
+    a[:children].should be_an Array
+    a[:children].length.should be > 0
+    a[:children][0].should be_a Hash
+    a[:hwnd].should == Win32::Screenshot::BitmapMaker.desktop_window
+  end
+  
+  it ".windows_hierarchy can return info" do
+    a = Win32::Screenshot::Util.windows_hierarchy true
+    # check for right structure
+    for hash_example in [a, a[:children][0]] do
+      hash_example.keys.sort.should == [:title, :hwnd, :class, :dimensions, :starting_coordinates, :children].sort
+    end
   end
   
   after :all do
