@@ -1,9 +1,11 @@
+require 'ostruct'
+
 module Win32
   class Screenshot
     class Util
       class << self
 
-        def all_windows
+        def all_desktop_windows
           titles = []
           window_callback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
             titles << [window_title(hwnd), hwnd]
@@ -13,7 +15,31 @@ module Win32
           BitmapMaker.enum_windows(window_callback, nil)
           titles
         end
+        
+        def windows_hierarchy_with_info
+          
+          all = {}
+          desktop_hwnd = BitmapMaker.desktop_window
+          hierarchy 
+          window_callback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
+            titles << [window_title(hwnd), hwnd]
+            true
+          end
 
+          BitmapMaker.enum_windows(window_callback, nil)
+          #enum_child_windows(hwnd, EnumWindowCallback, param)        
+          titles
+        
+        end
+        
+        def get_info hwnd
+          {:title => window_title(hwnd), 
+          :class => window_class(hwnd), 
+          :dimensions => dimensions_for(hwnd), 
+          :coordinates => location_of(hwnd)
+          }
+        end  
+        
         def window_title hwnd
           title_length = BitmapMaker.window_text_length(hwnd) + 1
           title = FFI::MemoryPointer.new :char, title_length
@@ -31,6 +57,13 @@ module Win32
           hwnd = BitmapMaker.hwnd(title_query)
           raise "window with title '#{title_query}' was not found!" unless hwnd
           hwnd
+        end
+        
+        def location_of(hwnd)
+          rect = [0, 0, 0, 0].pack('L4')
+          BitmapMaker.window_rect(hwnd, rect)
+          x, y, width, height = rect.unpack('L4')
+          return x, y
         end
 
         def dimensions_for(hwnd)

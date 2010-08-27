@@ -28,6 +28,8 @@ module Win32
                         [:long], :long
         attach_function :client_rect, :GetClientRect,
                         [:long, :pointer], :bool
+        attach_function :window_rect, :GetWindowRect,
+                        [:long, :pointer], :bool
         attach_function :minimized, :IsIconic,
                         [:long], :bool
         attach_function :show_window, :ShowWindow,
@@ -100,7 +102,7 @@ module Win32
                  :search_class, :char # boolean
         end
 
-        def hwnd(window_title, search_class = nil)
+        def hwnd(window_title, search_class = false)
           window = WindowStruct.new
           unless window_title.is_a?(Regexp)
             window_title = Regexp.escape(window_title.to_s)
