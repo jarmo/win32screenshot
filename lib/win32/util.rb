@@ -15,8 +15,9 @@ module Win32
         end
         
         # just returns a long list of hwnd's...
-        def windows_hierarchy with_info = false
-          
+        # unless with_info is true
+        # then it will return all hwnds with full info about each window
+        def windows_hierarchy with_info = false          
           all = {}
           desktop_hwnd = BitmapMaker.desktop_window
           root = {:hwnd => desktop_hwnd, :children => []}
