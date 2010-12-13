@@ -48,8 +48,6 @@ module Win32
                         [:long], :bool
         attach_function :set_active_window, :SetActiveWindow,
                         [:long], :long
-        attach_function :GetWindowThreadProcessId, [:ulong, :pointer], 
-                        :uint
 
         # gdi32.dll
         attach_function :create_compatible_dc, :CreateCompatibleDC,
@@ -146,7 +144,7 @@ module Win32
         
         def get_process_id_from_hwnd hwnd
           out = FFI::MemoryPointer.new(:uint)
-          GetWindowThreadProcessId(hwnd, out)
+          window_thread_process_id(hwnd, out)
           out.get_uint32(0) # read_uint
         end
 

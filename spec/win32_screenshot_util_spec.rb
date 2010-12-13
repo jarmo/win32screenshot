@@ -41,7 +41,7 @@ describe Win32::Screenshot::Util do
   it ".get_info returns lots of info about an hwnd" do
     desktop_hwnd = Win32::Screenshot::BitmapMaker.desktop_window
     info = Win32::Screenshot::Util.get_info desktop_hwnd
-    info.should be_a Hash
+    info.should be_a(Hash)
     info.keys.map {|k| k.to_s}.sort.should == ["class", "dimensions", "starting_coordinates", "title"]
   end
   
@@ -51,10 +51,10 @@ describe Win32::Screenshot::Util do
     # though in reality some windows might not be descendants of the desktop 
     # (see the WinCheat source which discusses this further)
     # but we don't worry about that edge case yet
-    a.should be_a Hash
-    a[:children].should be_an Array
+    a.should be_a(Hash)
+    a[:children].should be_an(Array)
     a[:children].length.should be > 0
-    a[:children][0].should be_a Hash
+    a[:children][0].should be_a(Hash)
     a[:hwnd].should == Win32::Screenshot::BitmapMaker.desktop_window
   end
   
