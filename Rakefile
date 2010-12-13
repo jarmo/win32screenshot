@@ -16,7 +16,7 @@ begin
 
     gem.rdoc_options = ["--main", "README.rdoc"]
 
-    gem.add_dependency "ffi"
+    gem.add_dependency "ffi", "~>0"
 
     gem.add_development_dependency "rspec", ">= 1.2.9"
     gem.add_development_dependency 'os'
