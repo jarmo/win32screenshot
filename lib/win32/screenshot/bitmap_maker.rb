@@ -13,16 +13,22 @@ module Win32
 
         # user32.dll
         attach_function :enum_windows, :EnumWindows,
-                        [:enum_callback, :pointer], :long
+                        [:enum_callback, :pointer], :int
+        attach_function :enum_child_windows, :EnumChildWindows,
+                        [:long, :enum_callback, :pointer], :int
         attach_function :window_text, :GetWindowTextA,
                         [:long, :pointer, :int], :int
         attach_function :window_text_length, :GetWindowTextLengthA,
                         [:long], :int
+        attach_function :class_name, :GetClassNameA,
+                         [:long, :pointer, :int], :int
         attach_function :window_visible, :IsWindowVisible,
                         [:long], :bool
         attach_function :dc, :GetDC,
                         [:long], :long
         attach_function :client_rect, :GetClientRect,
+                        [:long, :pointer], :bool
+        attach_function :window_rect, :GetWindowRect,
                         [:long, :pointer], :bool
         attach_function :minimized, :IsIconic,
                         [:long], :bool
@@ -42,7 +48,8 @@ module Win32
                         [:long], :bool
         attach_function :set_active_window, :SetActiveWindow,
                         [:long], :long
-
+        attach_function :GetWindowThreadProcessId, [:ulong, :pointer], 
+                        :uint
 
         # gdi32.dll
         attach_function :create_compatible_dc, :CreateCompatibleDC,
@@ -65,21 +72,37 @@ module Win32
 
         EnumWindowCallback = FFI::Function.new(:bool, [ :long, :pointer ], { :convention => :stdcall }) do |hwnd, param|
           searched_window = WindowStruct.new param
-          title = Util.window_title(hwnd)
+          if(searched_window[:search_class] != 0)
+            title = Util.window_class(hwnd)
+          else
+            title = Util.window_title(hwnd)
+          end
           if title =~ Regexp.new(searched_window[:title].read_string) && window_visible(hwnd)
             searched_window[:hwnd] = hwnd
             false
           else
-            true
+            if(searched_window[:search_class] != 0)
+              # if they're searching for a classname, enumerate children, too
+              enum_child_windows(hwnd, EnumWindowCallback, param)
+              if searched_window[:hwnd] != 0
+                # return early if already discovered
+                false 
+              else
+               true
+              end
+            else
+              true
+            end
           end
         end
 
         class WindowStruct < FFI::Struct
           layout :title, :pointer,
-                 :hwnd, :long
+                 :hwnd, :long,
+                 :search_class, :char # boolean
         end
 
-        def hwnd(window_title)
+        def hwnd(window_title, search_class = false)
           window = WindowStruct.new
           unless window_title.is_a?(Regexp)
             window_title = Regexp.escape(window_title.to_s)
@@ -88,10 +111,11 @@ module Win32
           end
           window_title = FFI::MemoryPointer.from_string(window_title)
           window[:title] = window_title
+          window[:search_class] = search_class ? 1 : 0
           enum_windows(EnumWindowCallback, window.to_ptr)
           window[:hwnd] == 0 ? nil : window[:hwnd]
         end
-
+        
         def prepare_window(hwnd, pause)
           restore(hwnd) if minimized(hwnd)
           set_foreground(hwnd)
@@ -118,6 +142,12 @@ module Win32
             bring_window_to_top(hwnd)
             attach_thread_input(foreground_thread, other_thread, false) unless other_thread == foreground_thread
           end
+        end
+        
+        def get_process_id_from_hwnd hwnd
+          out = FFI::MemoryPointer.new(:uint)
+          GetWindowThreadProcessId(hwnd, out)
+          out.get_uint32(0) # read_uint
         end
 
         def capture_all(hwnd, &proc)

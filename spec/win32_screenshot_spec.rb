@@ -72,6 +72,17 @@ describe Win32::Screenshot do
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
+  
+  it "can also search by window class name" do
+    good_pid = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
+    good_pid.should_not be_nil
+    good_pid.should == Win32::Screenshot::BitmapMaker.hwnd(/calcframe/i, true)
+  end
+  
+  it "can find sub windows as well" do
+    # search for an IE sub-window by class (doesn't have text)
+    Win32::Screenshot::BitmapMaker.hwnd(/CommandBarClass/i, true).should_not be_nil
+  end
 
   it "captures small windows" do
     title = /Notepad/
@@ -140,7 +151,7 @@ describe Win32::Screenshot do
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
-
+  
   it "captures area of the window with handle" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
     Win32::Screenshot.hwnd_area(hwnd, 30, 30, 100, 150) do |width, height, bmp|
@@ -174,8 +185,10 @@ describe Win32::Screenshot do
   end
 
   after :all do
-    Process.kill 9, @notepad
-    Process.kill 9, @iexplore rescue nil # allow for a pre-existing IE to have been used.
-    Process.kill 9, @calc
+    for name in [/calculator/i,  /Notepad/, /Internet Explorer/] do
+      # kill them in a jruby friendly way
+      pid = Win32::Screenshot::Util.window_process_id(Win32::Screenshot::Util.window_hwnd(name))
+      system("taskkill /PID #{pid}")
+    end
   end
 end
