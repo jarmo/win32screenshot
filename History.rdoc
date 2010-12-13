@@ -1,3 +1,14 @@
+= 0.0.8 2010-12-13
+* Renamed Win32::Screenshot::Util.all_windows to all_desktop_windows (Roger Pack)
+* Added methods to Win32::Screenshot::Util class (Roger Pack):
+  - window_process_id
+  - window_class
+  - windows_hierarchy_with_info
+  - get_info
+  - location_of
+* It's possible to search windows also by class name (Roger Pack)
+* Child windows will be also searched for (Roger Pack)
+
 = 0.0.7 2010-08-18
 * Supports now fully JRuby, 1.9.1 and 1.9.2 MRI!
 
