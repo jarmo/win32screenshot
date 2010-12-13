@@ -42,7 +42,7 @@ describe Win32::Screenshot::Util do
     desktop_hwnd = Win32::Screenshot::BitmapMaker.desktop_window
     info = Win32::Screenshot::Util.get_info desktop_hwnd
     info.should be_a Hash
-    info.keys.sort.should == [:title, :class, :dimensions, :starting_coordinates].sort
+    info.keys.map {|k| k.to_s}.sort.should == ["class", "dimensions", "starting_coordinates", "title"]
   end
   
   it ".windows_hierarchy returns hwnds" do
@@ -62,7 +62,7 @@ describe Win32::Screenshot::Util do
     a = Win32::Screenshot::Util.windows_hierarchy true
     # check for right structure
     for hash_example in [a, a[:children][0]] do
-      hash_example.keys.sort.should == [:title, :hwnd, :class, :dimensions, :starting_coordinates, :children].sort
+      hash_example.keys.map {|k| k.to_s}.sort.should == ["children", "class", "dimensions", "hwnd", "starting_coordinates", "title"]
     end
   end
   
