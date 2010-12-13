@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{win32screenshot}
-  s.version = "0.0.7"
+  s.version = "0.0.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jarmo Pertman", "Aslak Helles\303\270y"]
-  s.date = %q{2010-08-18}
+  s.date = %q{2010-12-13}
   s.description = %q{Capture Screenshots on Windows with Ruby}
   s.email = ["jarmo.p@gmail.com", "aslak.hellesoy@gmail.com"]
   s.extra_rdoc_files = [
@@ -49,18 +49,18 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<ffi>, [">= 0"])
+      s.add_runtime_dependency(%q<ffi>, ["~> 0"])
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
       s.add_development_dependency(%q<os>, [">= 0"])
       s.add_development_dependency(%q<rmagick>, [">= 0"])
     else
-      s.add_dependency(%q<ffi>, [">= 0"])
+      s.add_dependency(%q<ffi>, ["~> 0"])
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
       s.add_dependency(%q<os>, [">= 0"])
       s.add_dependency(%q<rmagick>, [">= 0"])
     end
   else
-    s.add_dependency(%q<ffi>, [">= 0"])
+    s.add_dependency(%q<ffi>, ["~> 0"])
     s.add_dependency(%q<rspec>, [">= 1.2.9"])
     s.add_dependency(%q<os>, [">= 0"])
     s.add_dependency(%q<rmagick>, [">= 0"])
