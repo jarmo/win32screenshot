@@ -27,14 +27,6 @@ module SpecHelper
     file_name = File.join @temp_dir, "#{file}.bmp"
     img.write file_name
     img.bitmap[0..1].should == 'BM'
-    saved_image = File.open(file_name, "rb") {|io| io.read}
-    saved_image[0..1].should == 'BM'
-=begin
-img = Magick::Image.from_blob(img)
-    png = img[0].to_blob {self.format = 'PNG'}
-    png[0..3].should == "\211PNG"
-    File.open(File.join(temp_dir, "#{file}.png"), "wb") {|io| io.puts(png)} if file
-=end
   end
 
   def wait_for_programs_to_open

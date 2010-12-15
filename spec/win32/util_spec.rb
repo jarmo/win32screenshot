@@ -68,7 +68,7 @@ describe Win32::Screenshot::Util do
   after :all do
     # tests our hwnd -> pid method, and conveniently, shuts down the calculator process
     calc_pid = Win32::Screenshot::Util.window_process_id(@calc_hwnd)
-    system("taskkill /PID #{calc_pid}")
+    system("taskkill /PID #{calc_pid} > nul")
     expect {Win32::Screenshot::Util.window_hwnd("Calculator") }.to raise_exception("window with title 'Calculator' was not found!")
   end
 end

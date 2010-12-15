@@ -53,7 +53,7 @@ describe Win32::Screenshot::Image do
 
     context "trying to overwrite existing file" do
       it "#write" do
-        file_path = @temp_dir + '/image.png'
+        file_path = @temp_dir + '/dummy-image.png'
         content = "dummy content"
         File.open(file_path, "w") {|io| io.write content}
         expect {@image.write(file_path)}.to raise_exception("File already exists: #{file_path}!")
@@ -64,7 +64,7 @@ describe Win32::Screenshot::Image do
 
   after :all do
     pid = Win32::Screenshot::Util.window_process_id(Win32::Screenshot::Util.window_hwnd(@title))
-    system("taskkill /PID #{pid}")
+    system("taskkill /PID #{pid} > nul")
   end
 
 end
