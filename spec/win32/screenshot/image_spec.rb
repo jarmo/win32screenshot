@@ -53,10 +53,10 @@ describe Win32::Screenshot::Image do
       end
     end
 
-    context "trying to overwrite existing file" do
+    context "not allowing to overwrite existing files" do
       it "#write" do
-        file_path = @temp_dir + '/dummy-image.png'
-        content = "dummy content"
+        file_path = @temp_dir + '/invalid-image.png'
+        content = "invalid content"
         File.open(file_path, "w") {|io| io.write content}
         expect {@image.write(file_path)}.to raise_exception("File already exists: #{file_path}!")
         File.size(file_path).should == content.size

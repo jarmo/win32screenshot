@@ -34,7 +34,7 @@ describe Win32::Screenshot::Util do
   end
   
   it ".window_class returns classname of a specified window's handle" do
-    Win32::Screenshot::Util.window_class(@calc_hwnd).should == "CalcFrame"
+    Win32::Screenshot::Util.window_class(@calc_hwnd).should =~ /CalcFrame|SciCalc/
   end
   
   it ".get_info returns lots of info about an hwnd" do
