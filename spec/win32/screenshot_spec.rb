@@ -1,14 +1,12 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Win32::Screenshot do
-  include SpecHelper
 
   before :all do
     @notepad = IO.popen("notepad").pid
     @iexplore = Dir.chdir("c:/program files/Internet Explorer") do; IO.popen(".\\iexplore about:blank").pid; end
     @calc = IO.popen("calc").pid
     wait_for_programs_to_open
-    cleanup
   end
 
   it "captures foreground" do

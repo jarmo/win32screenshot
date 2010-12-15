@@ -21,10 +21,6 @@ module SpecHelper
   # user32.dll
   attach_function :set_window_pos, :SetWindowPos,
                   [:long, :long, :int, :int, :int, :int, :int], :bool
-
-  def cleanup
-    FileUtils.rm Dir.glob(File.join(File.dirname(__FILE__), "tmp/*"))
-  end  
   
   def save_and_verify_image(img, file=nil)
     temp_dir = File.join(File.dirname(__FILE__), 'tmp')
@@ -85,4 +81,9 @@ img = Magick::Image.from_blob(img)
                    SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE)
     sleep 1
   end
+end
+
+RSpec.configure do |config|
+  config.include(SpecHelper)
+  config.before(:suite) {FileUtils.rm Dir.glob(File.join(File.dirname(__FILE__), "tmp/*"))}
 end
