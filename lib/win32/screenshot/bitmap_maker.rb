@@ -1,5 +1,3 @@
-require 'ffi'
-
 module Win32
   class Screenshot
     # internal methods
@@ -181,7 +179,7 @@ module Win32
                   54
           ].pack('SLSSL')
 
-          bmp_data = bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size)
+          bmp_data = Image.new(bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size))
           yield(w, h, bmp_data)
         ensure
           lpvpxldata.free

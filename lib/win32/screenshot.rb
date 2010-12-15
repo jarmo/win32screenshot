@@ -1,3 +1,6 @@
+require 'ffi'
+require 'mini_magick'
+require File.dirname(__FILE__) + '/screenshot/image'
 require File.dirname(__FILE__) + '/screenshot/bitmap_maker'
 require File.dirname(__FILE__) + '/util'
 

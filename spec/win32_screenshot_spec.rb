@@ -12,52 +12,52 @@ describe Win32::Screenshot do
   end
 
   it "captures foreground" do
-    Win32::Screenshot.foreground do |width, height, bmp|
-      check_image(bmp, 'foreground')
+    Win32::Screenshot.foreground do |width, height, img|
+      save_and_verify_image(img, 'foreground')
       hwnd = Win32::Screenshot::BitmapMaker.foreground_window
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 
   it "captures area of the foreground" do
-    Win32::Screenshot.foreground_area(30, 30, 100, 150) do |width, height, bmp|
-      check_image(bmp, 'foreground_area')
+    Win32::Screenshot.foreground_area(30, 30, 100, 150) do |width, height, img|
+      save_and_verify_image(img, 'foreground_area')
       width.should == 70
       height.should == 120
     end
   end
 
   it "doesn't allow to capture area of the foreground with invalid coordinates" do
-    lambda {Win32::Screenshot.foreground_area(0, 0, -1, 100) {|width, height, bmp| check_image('foreground2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
+    expect {Win32::Screenshot.foreground_area(0, 0, -1, 100) {|width, height, img| }}.
+            to raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
 
   it "captures desktop" do
-    Win32::Screenshot.desktop do |width, height, bmp|
-      check_image(bmp, 'desktop')
+    Win32::Screenshot.desktop do |width, height, img|
+      save_and_verify_image(img, 'desktop')
       hwnd = Win32::Screenshot::BitmapMaker.desktop_window
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
 
   it "captures area of the desktop" do
-    Win32::Screenshot.desktop_area(30, 30, 100, 150) do |width, height, bmp|
-      check_image(bmp, 'desktop_area')
+    Win32::Screenshot.desktop_area(30, 30, 100, 150) do |width, height, img|
+      save_and_verify_image(img, 'desktop_area')
       width.should == 70
       height.should == 120
     end
   end
 
   it "doesn't allow to capture area of the desktop with invalid coordinates" do
-    lambda {Win32::Screenshot.desktop_area(0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
+    expect {Win32::Screenshot.desktop_area(0, 0, -1, 100) {|width, height, img| }}.
+            to raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
 
   it "captures maximized window by window title" do
     title = "Internet Explorer"
     maximize(title)
-    Win32::Screenshot.window(title) do |width, height, bmp|
-      check_image(bmp, 'iexplore')
+    Win32::Screenshot.window(title) do |width, height, img|
+      save_and_verify_image(img, 'iexplore')
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
@@ -66,8 +66,8 @@ describe Win32::Screenshot do
   it "captures minimized window by window title as a regexp" do
     title = /calculator/i
     minimize(title)
-    Win32::Screenshot.window(title) do |width, height, bmp|
-      check_image(bmp, 'calc')
+    Win32::Screenshot.window(title) do |width, height, img|
+      save_and_verify_image(img, 'calc')
       hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
@@ -87,8 +87,8 @@ describe Win32::Screenshot do
   it "captures small windows" do
     title = /Notepad/
     resize(title)
-    Win32::Screenshot.window(title) do |width, height, bmp|
-      check_image(bmp, 'notepad')
+    Win32::Screenshot.window(title) do |width, height, img|
+      save_and_verify_image(img, 'notepad')
       # we should get the size of the picture because
       # screenshot doesn't include titlebar and the size
       # varies between different themes and Windows versions
@@ -99,8 +99,8 @@ describe Win32::Screenshot do
 
   it "captures area of the window" do
     title = /calculator/i
-    Win32::Screenshot.window_area(title, 30, 30, 100, 150) do |width, height, bmp|
-      check_image(bmp, 'calc_area')
+    Win32::Screenshot.window_area(title, 30, 30, 100, 150) do |width, height, img|
+      save_and_verify_image(img, 'calc_area')
       width.should == 70
       height.should == 120
     end
@@ -110,8 +110,8 @@ describe Win32::Screenshot do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
     expected_width, expected_height = Win32::Screenshot::Util.dimensions_for(hwnd)
-    Win32::Screenshot.window_area(title, 0, 0, expected_width, expected_height) do |width, height, bmp|
-      check_image(bmp, 'calc_area_full_window')
+    Win32::Screenshot.window_area(title, 0, 0, expected_width, expected_height) do |width, height, img|
+      save_and_verify_image(img, 'calc_area_full_window')
       width.should == expected_width
       height.should == expected_height
     end
@@ -119,43 +119,43 @@ describe Win32::Screenshot do
 
   it "doesn't allow to capture area of the window with negative coordinates" do
     title = /calculator/i
-    lambda {Win32::Screenshot.window_area(title, 0, 0, -1, 100) {|width, height, bmp| check_image('calc2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
+    expect {Win32::Screenshot.window_area(title, 0, 0, -1, 100)}.
+            to raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
 
   it "doesn't allow to capture area of the window if coordinates are the same" do
     title = /calculator/i
-    lambda {Win32::Screenshot.window_area(title, 10, 0, 10, 20) {|width, height, bmp| check_image('calc4')}}.
-            should raise_exception("specified coordinates (10, 0, 10, 20) are invalid - cannot have x1 > x2 or y1 > y2!")
+    expect {Win32::Screenshot.window_area(title, 10, 0, 10, 20)}.
+            to raise_exception("specified coordinates (10, 0, 10, 20) are invalid - cannot have x1 > x2 or y1 > y2!")
   end
 
   it "doesn't allow to capture area of the window if second coordinate is smaller than first one" do
     title = /calculator/i
-    lambda {Win32::Screenshot.window_area(title, 0, 10, 10, 9) {|width, height, bmp| check_image('calc5')}}.
-            should raise_exception("specified coordinates (0, 10, 10, 9) are invalid - cannot have x1 > x2 or y1 > y2!")
+    expect {Win32::Screenshot.window_area(title, 0, 10, 10, 9)}.
+            to raise_exception("specified coordinates (0, 10, 10, 9) are invalid - cannot have x1 > x2 or y1 > y2!")
   end
 
   it "doesn't allow to capture area of the window with too big coordinates" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
     expected_width, expected_height = Win32::Screenshot::Util.dimensions_for(hwnd)
-    lambda {Win32::Screenshot.window_area(title, 0, 0, 10, 1000) {|width, height, bmp| check_image('calc3')}}.
-            should raise_exception("specified coordinates (0, 0, 10, 1000) are invalid - maximum are x2=#{expected_width} and y2=#{expected_height}!")
+    expect {Win32::Screenshot.window_area(title, 0, 0, 10, 1000)}.
+            to raise_exception("specified coordinates (0, 0, 10, 1000) are invalid - maximum are x2=#{expected_width} and y2=#{expected_height}!")
   end
 
   it "captures by window with handle" do
     title = /calculator/i
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
-    Win32::Screenshot.hwnd(hwnd) do |width, height, bmp|
-      check_image(bmp, 'calc_hwnd')
+    Win32::Screenshot.hwnd(hwnd) do |width, height, img|
+      save_and_verify_image(img, 'calc_hwnd')
       [width, height].should == Win32::Screenshot::Util.dimensions_for(hwnd)
     end
   end
   
   it "captures area of the window with handle" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
-    Win32::Screenshot.hwnd_area(hwnd, 30, 30, 100, 150) do |width, height, bmp|
-      check_image(bmp, 'calc_hwnd_area')
+    Win32::Screenshot.hwnd_area(hwnd, 30, 30, 100, 150) do |width, height, img|
+      save_and_verify_image(img, 'calc_hwnd_area')
       width.should == 70
       height.should == 120
     end
@@ -163,29 +163,29 @@ describe Win32::Screenshot do
 
   it "doesn't allow to capture area of the window with handle with invalid coordinates" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
-    lambda {Win32::Screenshot.hwnd_area(hwnd, 0, 0, -1, 100) {|width, height, bmp| check_image('desktop2')}}.
-            should raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
+    expect {Win32::Screenshot.hwnd_area(hwnd, 0, 0, -1, 100) {|width, height, img| }}.
+            to raise_exception("specified coordinates (0, 0, -1, 100) are invalid - cannot be negative!")
   end
 
   it "captures based on coordinates" do
     hwnd = Win32::Screenshot::BitmapMaker.hwnd(/calculator/i)
     bmp1 = bmp2 = nil
-    Win32::Screenshot.hwnd_area(hwnd, 100, 100, 170, 180) do |width, height, bmp|; bmp1 = bmp; end
-    Win32::Screenshot.hwnd_area(hwnd, 0, 0, 70, 80) do |width, height, bmp|; bmp2 = bmp; end
+    Win32::Screenshot.hwnd_area(hwnd, 100, 100, 170, 180) {|width, height, img| bmp1 = img.bitmap }
+    Win32::Screenshot.hwnd_area(hwnd, 0, 0, 70, 80) {|width, height, img| bmp2 = img.bitmap }
     bmp1.length.should == bmp2.length
     bmp1.should_not == bmp2
   end
 
   it "allows window titles to include regular expressions' special characters" do
-    lambda {Win32::Screenshot::BitmapMaker.hwnd("Window title *^$?([.")}.should_not raise_exception
+    expect {Win32::Screenshot::BitmapMaker.hwnd("Window title *^$?([.")}.to_not raise_exception
   end
 
   it "raises an 'no block given' Exception if no block was given" do
-    lambda {Win32::Screenshot.foreground}.should raise_exception(LocalJumpError)
+    expect {Win32::Screenshot.foreground}.to raise_exception(LocalJumpError)
   end
 
   after :all do
-    for name in [/calculator/i,  /Notepad/, /Internet Explorer/] do
+    [/calculator/i,  /Notepad/, /Internet Explorer/].each do |name|
       # kill them in a jruby friendly way
       pid = Win32::Screenshot::Util.window_process_id(Win32::Screenshot::Util.window_hwnd(name))
       system("taskkill /PID #{pid}")

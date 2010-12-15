@@ -2,7 +2,6 @@
 
 require 'rubygems'
 require 'rake'
-require 'os'
 
 begin
   require 'jeweler'
@@ -17,14 +16,9 @@ begin
     gem.rdoc_options = ["--main", "README.rdoc"]
 
     gem.add_dependency "ffi", "~>0"
+    gem.add_dependency "mini_magick", "~>3.1"
 
-    gem.add_development_dependency "rspec", ">= 1.2.9"
-    gem.add_development_dependency 'os'
-    if OS.java?
-      gem.add_development_dependency "rmagick4j"
-    else
-      gem.add_development_dependency "rmagick"
-    end
+    gem.add_development_dependency "rspec", "~>2.3"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
