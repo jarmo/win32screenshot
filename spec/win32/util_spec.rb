@@ -5,7 +5,7 @@ describe Win32::Screenshot::Util do
 
   before :all do
     # should not have any running calculators yet...
-    proc {Win32::Screenshot::Util.window_hwnd("Calculator") }.should raise_exception("window with title 'Calculator' was not found!")
+    expect {Win32::Screenshot::Util.window_hwnd("Calculator") }.to raise_exception("window with title 'Calculator' was not found!")
     @calc = IO.popen("calc").pid
     wait_for_calculator_to_open
     @calc_hwnd = Win32::Screenshot::Util.window_hwnd("Calculator")
@@ -18,7 +18,7 @@ describe Win32::Screenshot::Util do
     all_windows[0][0].should be_a(String)
     all_windows[0][1].should be_a(Fixnum)
 
-    calculator = all_windows.find {|title, hwnd| title =~ /Calculator/}
+    calculator = all_windows.find {|title, _| title =~ /Calculator/}
     calculator.should_not be_nil
     calculator[0].should == "Calculator"
     calculator[1].should == @calc_hwnd
@@ -61,7 +61,7 @@ describe Win32::Screenshot::Util do
   it ".windows_hierarchy can return info" do
     a = Win32::Screenshot::Util.windows_hierarchy true
     # check for right structure
-    for hash_example in [a, a[:children][0]] do
+    [a, a[:children][0]].each do |hash_example|
       hash_example.keys.map {|k| k.to_s}.sort.should == ["children", "class", "dimensions", "hwnd", "starting_coordinates", "title"]
     end
   end
@@ -70,6 +70,6 @@ describe Win32::Screenshot::Util do
     # tests our hwnd -> pid method, and conveniently, shuts down the calculator process
     calc_pid = Win32::Screenshot::Util.window_process_id(@calc_hwnd)
     system("taskkill /PID #{calc_pid}")
-    proc {Win32::Screenshot::Util.window_hwnd("Calculator") }.should raise_exception("window with title 'Calculator' was not found!")
+    expect {Win32::Screenshot::Util.window_hwnd("Calculator") }.to raise_exception("window with title 'Calculator' was not found!")
   end
 end
