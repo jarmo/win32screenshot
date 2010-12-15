@@ -38,7 +38,8 @@ describe Win32::Screenshot::Image do
     context "trying to save to the unknown format" do
       it "#write" do
         file_path = @temp_dir + '/image.notknown'
-        expect {@image.write(file_path)}.to raise_exception(MiniMagick::Error)
+        expect {@image.write(file_path)}.
+                to raise_exception("File '#{file_path}' has to have one of the following extensions: #{Win32::Screenshot::Image::FORMATS.join(", ")}")
         File.should_not exist(file_path)
       end
     end
@@ -46,7 +47,8 @@ describe Win32::Screenshot::Image do
     context "trying to save with the filename without an extension" do
       it "#write" do
         file_path = @temp_dir + '/image'
-        expect {@image.write(file_path)}.to raise_exception("Please specify '#{file_path}' with an extension to detect the desired image output format!")
+        expect {@image.write(file_path)}.
+                to raise_exception("File '#{file_path}' has to have one of the following extensions: #{Win32::Screenshot::Image::FORMATS.join(", ")}")
         File.should_not exist(file_path)
       end
     end
