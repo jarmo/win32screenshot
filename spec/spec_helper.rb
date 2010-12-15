@@ -23,9 +23,8 @@ module SpecHelper
                   [:long, :long, :int, :int, :int, :int, :int], :bool
   
   def save_and_verify_image(img, file=nil)
-    temp_dir = File.join(File.dirname(__FILE__), 'tmp')
-    FileUtils.mkdir temp_dir unless File.exists?(temp_dir)
-    file_name = File.join temp_dir, "#{file}.bmp"
+    FileUtils.mkdir @temp_dir unless File.exists?(@temp_dir)
+    file_name = File.join @temp_dir, "#{file}.bmp"
     img.write file_name
     img.bitmap[0..1].should == 'BM'
     saved_image = File.open(file_name, "rb") {|io| io.read}
@@ -86,4 +85,5 @@ end
 RSpec.configure do |config|
   config.include(SpecHelper)
   config.before(:suite) {FileUtils.rm Dir.glob(File.join(File.dirname(__FILE__), "tmp/*"))}
+  config.before(:all) {@temp_dir = File.join(File.dirname(__FILE__), 'tmp')}
 end
