@@ -1,5 +1,5 @@
 module Win32
-  class Screenshot
+  module Screenshot
     class Util
       class << self
 

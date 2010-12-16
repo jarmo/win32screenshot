@@ -1,8 +1,6 @@
 module Win32
-  # Captures screenshots with Ruby on Windows
-  class Screenshot
-    class << self
-
+  module Screenshot
+    class Take
       # captures foreground
       def foreground(&proc)
         hwnd = BitmapMaker.foreground_window
@@ -86,7 +84,7 @@ module Win32
           raise "specified coordinates (#{specified_coordinates}) are invalid - maximum are x2=#{max_width} and y2=#{max_height}!"
         end
       end
-    end
 
+    end
   end
 end

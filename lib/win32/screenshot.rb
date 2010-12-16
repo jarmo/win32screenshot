@@ -6,7 +6,7 @@ require 'mini_magick'
 ENV["PATH"] = "#{File.dirname(__FILE__) + "/../../ext"};#{ENV["PATH"]}"
 ENV["MAGICK_CODER_MODULE_PATH"] = File.dirname(__FILE__) + "/../../ext/modules/coders"
 
-require File.dirname(__FILE__) + '/screenshot/screenshot'
+require File.dirname(__FILE__) + '/screenshot/take'
 require File.dirname(__FILE__) + '/screenshot/image'
 require File.dirname(__FILE__) + '/screenshot/bitmap_maker'
-require File.dirname(__FILE__) + '/util'
+require File.dirname(__FILE__) + '/screenshot/util'
