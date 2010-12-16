@@ -1,90 +1,100 @@
 module Win32
   module Screenshot
+    # Capture Screenshots on Windows with Ruby
     class Take
-      # captures foreground
-      def foreground(&proc)
-        hwnd = BitmapMaker.foreground_window
-        BitmapMaker.capture_all(hwnd, &proc)
-      end
 
-      # captures area of the foreground
-      # where *x1* and *y1* are 0 in the upper left corner and
-      # *x2* specifies the width and *y2* the height of the area to be captured
-      def foreground_area(x1, y1, x2, y2, &proc)
-        hwnd = BitmapMaker.foreground_window
-        validate_coordinates(hwnd, x1, y1, x2, y2)
-        BitmapMaker.capture_area(hwnd, x1, y1, x2, y2, &proc)
-      end
+      class << self
+        # Takes a screenshot of the specified object or it's area.
+        #
+        # @example Take a screenshot of the window with the specified title
+        #   Win32::Screenshot::Take.new(:window, :title => "Windows Internet Explorer")
+        #
+        # @example Take a screenshot of the foreground
+        #   Win32::Screenshot::Take.new(:foreground)
+        #
+        # @example Take a screenshot of the specified window's top-left corner's area
+        #   Win32::Screenshot::Take.new(:window, :title => /internet/i, :area => [10, 10, 20, 20])
+        #
+        # @example Take a screenshot of the window with the specified handle
+        #   Win32::Screenshot::Take.new(:window, :hwnd => 123456)
+        #
+        # @example Take a screenshot of the child window with the specified internal class name
+        #   Win32::Screenshot::Take.new(:rautomation, RAutomation::Window.new(:hwnd => 123456).child(:class => "Internet Explorer_Server"))
+        #
+        # @param [Symbol] what the type of the object to take a screenshot of,
+        #   possible values are _:foreground_, _:desktop_ and _:window_.
+        # @param [Hash] opts options only needed if _what_ is a _:window_ and/or
+        #   only an _:area_ is needed to take as a screenshot. It is possible to specify as many
+        #   options as are needed for searching for the unique window. By default first window with
+        #   matching identifiers will be taken screenshot of. It is possible to use in addition
+        #   to other options a 0-based _:index_ option to search for other windows if multiple
+        #   windows match the specified criteria.
+        # @option opts [String, Regexp] :title Title of the window
+        # @option opts [String, Regexp] :text Visible text of the window
+        # @option opts [String, Regexp] :class Internal class name of the window
+        # @option opts [String, Fixnum] :hwnd Window handle in decimal format
+        # @option opts [String, Fixnum] :pid Window process ID (PID)
+        # @option opts [String, Fixnum] :index Index to specify n-th window to take a screenshot of if
+        #   all other criteria match
+        # @option opts [RAutomation::Window] :rautomation RAutomation::Window object to take a screenshot of. Useful for
+        #   taking screenshots of the child windows
+        # @return [Image] the {Image} of the specified object
+        def new(what, opts = {})
+          valid_whats = [:foreground, :desktop, :window]
+          raise "It is not possible to take a screenshot of '#{what}', possible values are #{valid_whats.join(", ")}" unless valid_whats.include?(what)
 
-      # captures visible view of the screen
-      #
-      # to make screenshot of the real desktop, all
-      # windows must be minimized before
-      def desktop(&proc)
-        hwnd = BitmapMaker.desktop_window
-        BitmapMaker.capture_all(hwnd, &proc)
-      end
-
-      # captures area of the visible view of the screen
-      # where *x1* and *y1* are 0 in the upper left corner and
-      # *x2* specifies the width and *y2* the height of the area to be captured
-      #
-      # to make screenshot of the real desktop, all
-      # windows must be minimized before
-      def desktop_area(x1, y1, x2, y2, &proc)
-        hwnd = BitmapMaker.desktop_window
-        validate_coordinates(hwnd, x1, y1, x2, y2)
-        BitmapMaker.capture_area(hwnd, x1, y1, x2, y2, &proc)
-      end
-
-      # captures window with a *title_query* and waits *pause* (by default is 0.5)
-      # seconds after trying to set window to the foreground
-      def window(title_query, pause=0.5, &proc)
-        hwnd = Util.window_hwnd(title_query)
-        hwnd(hwnd, pause, &proc)
-      end
-
-      # captures area of the window with a *title_query*
-      # where *x1* and *y1* are 0 in the upper left corner and
-      # *x2* specifies the width and *y2* the height of the area to be captured
-      def window_area(title_query, x1, y1, x2, y2, pause=0.5, &proc)
-        hwnd = Util.window_hwnd(title_query)
-        hwnd_area(hwnd, x1, y1, x2, y2, pause, &proc)
-      end
-
-      # captures by window handle
-      def hwnd(hwnd, pause=0.5, &proc)
-        BitmapMaker.prepare_window(hwnd, pause)
-        BitmapMaker.capture_all(hwnd, &proc)
-      end
-
-      # captures area of the window with a handle of *hwnd*
-      # where *x1* and *y1* are 0 in the upper left corner and
-      # *x2* specifies the width and *y2* the height of the area to be captured
-      def hwnd_area(hwnd, x1, y1, x2, y2, pause=0.5, &proc)
-        validate_coordinates(hwnd, x1, y1, x2, y2)
-        BitmapMaker.prepare_window(hwnd, pause)
-        BitmapMaker.capture_area(hwnd, x1, y1, x2, y2, &proc)
-      end
-
-      private
-
-      def validate_coordinates(hwnd, *coords)
-        specified_coordinates = coords.join(', ')
-        if coords.any? {|c| c < 0}
-          raise "specified coordinates (#{specified_coordinates}) are invalid - cannot be negative!"
-        end
-        x1, y1, x2, y2 = *coords
-        if x1 >= x2 || y1 >= y2
-          raise "specified coordinates (#{specified_coordinates}) are invalid - cannot have x1 > x2 or y1 > y2!"
+          self.send(what, opts)
         end
 
-        max_width, max_height = Util.dimensions_for(hwnd)
-        if x2 > max_width || y2 > max_height
-          raise "specified coordinates (#{specified_coordinates}) are invalid - maximum are x2=#{max_width} and y2=#{max_height}!"
-        end
-      end
+        private
 
+        def foreground(opts)
+          hwnd = BitmapMaker.foreground_window
+          take_screenshot(hwnd, opts)
+        end
+
+        def desktop(opts)
+          hwnd = BitmapMaker.desktop_window
+          take_screenshot(hwnd, opts)
+        end
+
+        def window(opts)
+          area = {:area => opts.delete(:area)}
+          win = opts[:rautomation] || RAutomation::Window.new(opts)
+          timeout = Time.now + 60
+          until win.active?
+            raise "Failed to set window into focus, unable to take a screenshot!" if Time.now >= timeout
+            win.activate
+          end
+          take_screenshot(win.hwnd, opts.merge(area || {}))
+        end
+
+        def take_screenshot(hwnd, opts)
+          if opts[:area]
+            validate_coordinates(hwnd, *opts[:area])
+            BitmapMaker.capture_area(hwnd, *opts[:area])
+          else
+            BitmapMaker.capture_all(hwnd)
+          end
+        end
+
+        def validate_coordinates(hwnd, x1, y1, x2, y2)
+          specified_coordinates = "x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}"
+          if [x1, y1, x2, y2].any? {|c| c < 0}
+            raise "specified coordinates (#{specified_coordinates}) are invalid - cannot be negative!"
+          end
+
+          if x1 >= x2 || y1 >= y2
+            raise "specified coordinates (#{specified_coordinates}) are invalid - cannot have x1 > x2 or y1 > y2!"
+          end
+
+          max_width, max_height = Util.dimensions_for(hwnd)
+          if x2 > max_width || y2 > max_height
+            raise "specified coordinates (#{specified_coordinates}) are invalid - maximum x2: #{max_width} and y2: #{max_height}!"
+          end
+        end
+
+      end
     end
   end
 end

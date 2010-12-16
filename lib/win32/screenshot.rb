@@ -1,6 +1,7 @@
 require 'ffi'
 require 'stringio' # this is needed for MiniMagick for now
 require 'mini_magick'
+require 'rautomation'
 
 # environment variables for bundled MiniMagick
 ENV["PATH"] = "#{File.dirname(__FILE__) + "/../../ext"};#{ENV["PATH"]}"

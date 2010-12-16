@@ -1,14 +1,22 @@
 module Win32
-  class Screenshot
+  module Screenshot
+    # Holds the bitmap data and writes it to the disk
     class Image
+      # [String] raw bitmap blob
       attr_reader :bitmap
 
+      # Supported output formats
       FORMATS = %w{bmp gif jpg png}
 
-      def initialize(bmp_data)
-        @bitmap = bmp_data
+      # @private
+      def initialize(blob)
+        @bitmap = blob
       end
 
+      # Writes image to the disk.
+      # @param [String] file_path writes image to the specified path.
+      # @raise [RuntimeError] when _file_path_ already exists.
+      # @raise [RuntimeError] when _file_path_ is not with the supported output {FORMATS} extension.
       def write(file_path)
         raise "File already exists: #{file_path}!" if File.exists? file_path
         ext = File.extname(file_path)[1..-1]
