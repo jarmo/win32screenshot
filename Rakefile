@@ -7,8 +7,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "win32screenshot"
-    gem.summary = %Q{Capture Screenshots on Windows with Ruby}
-    gem.description = %Q{Capture Screenshots on Windows with Ruby}
+    gem.summary = %Q{Capture Screenshots on Windows with Ruby to bmp, gif, jpg or png formats!}
+    gem.description = %Q{Capture Screenshots on Windows with Ruby to bmp, gif, jpg or png formats!}
     gem.email = ["jarmo.p@gmail.com", "aslak.hellesoy@gmail.com"]
     gem.homepage = "http://github.com/jarmo/win32screenshot"
     gem.authors = ["Jarmo Pertman", "Aslak Hellesøy"]
