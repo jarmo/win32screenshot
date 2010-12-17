@@ -1,3 +1,10 @@
+= 1.0.0 2010-12-17 - The New Beginning
+* Bundling all necessary libraries/binaries with the gem - ImageMagick and RMagick are no more needed, finally!
+* Using MiniMagick to save images to gif, jpg and png format
+* Simplified and deleted a lot of code causing backwards incompatibility and major API changes!
+    Refer to the README.rdoc and documentation for the overview of the new and better API
+* From now on this library is following Semantic Versioning (http://semver.org) rules
+
 = 0.0.8 2010-12-13
 * Renamed Win32::Screenshot::Util.all_windows to all_desktop_windows (Roger Pack)
 * Added methods to Win32::Screenshot::Util class (Roger Pack):
