@@ -17,7 +17,7 @@ begin
 
     gem.add_dependency "ffi", "~>0"
     gem.add_dependency "mini_magick", "~>3.1"
-    gem.add_dependency "rautomation", "~>0.1"
+    gem.add_dependency "rautomation", "~>0.2"
 
     gem.add_development_dependency "rspec", "~>2.3"
   end
