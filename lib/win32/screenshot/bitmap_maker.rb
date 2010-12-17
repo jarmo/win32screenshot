@@ -1,8 +1,7 @@
 module Win32
   module Screenshot
-    # This is an internal class for taking the actual screenshots and not part of a public API.
-    #
     # @private
+    # This is an internal class for taking the actual screenshots and not part of a public API.
     class BitmapMaker
       class << self
         extend FFI::Library
