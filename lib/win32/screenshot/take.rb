@@ -34,7 +34,7 @@ module Win32
         # @option opts [String, Regexp] :class Internal class name of the window
         # @option opts [String, Fixnum] :hwnd Window handle in decimal format
         # @option opts [String, Fixnum] :pid Window process ID (PID)
-        # @option opts [String, Fixnum] :index Index to specify n-th window to take a screenshot of if
+        # @option opts [String, Fixnum] :index 0-based index to specify n-th window to take a screenshot of if
         #   all other criteria match
         # @option opts [RAutomation::Window] :rautomation RAutomation::Window object to take a screenshot of. Useful for
         #   taking screenshots of the child windows
