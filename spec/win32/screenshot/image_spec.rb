@@ -5,7 +5,7 @@ describe Win32::Screenshot::Image do
   before :all do
     IO.popen("calc")
     @calc = RAutomation::Window.new(:title => /calculator/i).pid
-    @image = Win32::Screenshot::Take.new(:window, :pid => @calc)
+    @image = Win32::Screenshot::Take.of(:window, :pid => @calc)
   end
 
   describe "stores raw bitmap data" do

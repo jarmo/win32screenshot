@@ -7,19 +7,19 @@ module Win32
         # Takes a screenshot of the specified object or it's area.
         #
         # @example Take a screenshot of the window with the specified title
-        #   Win32::Screenshot::Take.new(:window, :title => "Windows Internet Explorer")
+        #   Win32::Screenshot::Take.of(:window, :title => "Windows Internet Explorer")
         #
         # @example Take a screenshot of the foreground
-        #   Win32::Screenshot::Take.new(:foreground)
+        #   Win32::Screenshot::Take.of(:foreground)
         #
         # @example Take a screenshot of the specified window's top-left corner's area
-        #   Win32::Screenshot::Take.new(:window, :title => /internet/i, :area => [10, 10, 20, 20])
+        #   Win32::Screenshot::Take.of(:window, :title => /internet/i, :area => [10, 10, 20, 20])
         #
         # @example Take a screenshot of the window with the specified handle
-        #   Win32::Screenshot::Take.new(:window, :hwnd => 123456)
+        #   Win32::Screenshot::Take.of(:window, :hwnd => 123456)
         #
         # @example Take a screenshot of the child window with the specified internal class name
-        #   Win32::Screenshot::Take.new(:rautomation, RAutomation::Window.new(:hwnd => 123456).child(:class => "Internet Explorer_Server"))
+        #   Win32::Screenshot::Take.of(:rautomation, RAutomation::Window.new(:hwnd => 123456).child(:class => "Internet Explorer_Server"))
         #
         # @param [Symbol] what the type of the object to take a screenshot of,
         #   possible values are _:foreground_, _:desktop_ and _:window_.
@@ -39,12 +39,14 @@ module Win32
         # @option opts [RAutomation::Window] :rautomation RAutomation::Window object to take a screenshot of. Useful for
         #   taking screenshots of the child windows
         # @return [Image] the {Image} of the specified object
-        def new(what, opts = {})
+        def of(what, opts = {})
           valid_whats = [:foreground, :desktop, :window]
           raise "It is not possible to take a screenshot of '#{what}', possible values are #{valid_whats.join(", ")}" unless valid_whats.include?(what)
 
           self.send(what, opts)
         end
+
+        alias_method :new, :of
 
         private
 
