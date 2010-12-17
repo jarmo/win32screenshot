@@ -6,8 +6,6 @@ require 'rspec'
 require 'fileutils'
 
 module SpecHelper
-  SW_MAXIMIZE = 3
-  SW_MINIMIZE = 6
   HWND_TOPMOST = -1
   HWND_NOTOPMOST = -2
   SWP_NOSIZE = 1
@@ -29,39 +27,8 @@ module SpecHelper
     img.bitmap[0..1].should == 'BM'
   end
 
-  def wait_for_programs_to_open
-    until Win32::Screenshot::BitmapMaker.hwnd(/Internet Explorer/) &&
-            Win32::Screenshot::BitmapMaker.hwnd(/Notepad/)
-      sleep 0.1
-    end
-    wait_for_calculator_to_open
-
-    # just in case of slow PC
-    sleep 8
-  end
-
-  def wait_for_calculator_to_open
-    until Win32::Screenshot::BitmapMaker.hwnd(/Calculator/)
-      sleep 0.1
-    end
-    # just in case of slow PC
-    sleep 2
-  end
-
-  def maximize title
-    Win32::Screenshot::BitmapMaker.show_window(Win32::Screenshot::BitmapMaker.hwnd(title),
-                                               SW_MAXIMIZE)
-    sleep 1
-  end
-
-  def minimize title
-    Win32::Screenshot::BitmapMaker.show_window(Win32::Screenshot::BitmapMaker.hwnd(title),
-                                               SW_MINIMIZE)
-    sleep 1
-  end
-
   def resize title
-    hwnd = Win32::Screenshot::BitmapMaker.hwnd(title)
+    hwnd = RAutomation::Window.new(:title => title).hwnd
     set_window_pos(hwnd,
                    HWND_TOPMOST,
                    0, 0, 150, 238,

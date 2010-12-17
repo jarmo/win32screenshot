@@ -85,10 +85,10 @@ module Win32
           end
 
           if x1 >= x2 || y1 >= y2
-            raise "specified coordinates (#{specified_coordinates}) are invalid - cannot have x1 > x2 or y1 > y2!"
+            raise "specified coordinates (#{specified_coordinates}) are invalid - cannot be x1 >= x2 or y1 >= y2!"
           end
 
-          max_width, max_height = Util.dimensions_for(hwnd)
+          max_width, max_height = BitmapMaker.dimensions_for(hwnd)
           if x2 > max_width || y2 > max_height
             raise "specified coordinates (#{specified_coordinates}) are invalid - maximum x2: #{max_width} and y2: #{max_height}!"
           end

@@ -41,7 +41,7 @@ module Win32
                         [:long, :long], :int
 
         def capture_all(hwnd)
-          width, height = Util.dimensions_for(hwnd)
+          width, height = dimensions_for(hwnd)
           capture_area(hwnd, 0, 0, width, height)
         end
 
@@ -73,12 +73,19 @@ module Win32
                   54
           ].pack('SLSSL')
 
-          Image.new(bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size))
+          Image.new(bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size), w, h)
         ensure
           lpvpxldata.free
           delete_object(hmemBM)
           delete_dc(hmemDC)
           release_dc(0, hScreenDC)
+        end
+
+        def dimensions_for(hwnd)
+          rect = [0, 0, 0, 0].pack('L4')
+          BitmapMaker.client_rect(hwnd.to_i, rect)
+          _, _, width, height = rect.unpack('L4')
+          [width, height]
         end
 
       end

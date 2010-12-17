@@ -38,9 +38,7 @@ task :spec => :check_dependencies
 task :default => :spec
 
 require 'yard'
-YARD::Rake::YardocTask.new do |t|
-  t.options = ["--no-cache"]
-end
+YARD::Rake::YardocTask.new
 
 desc "Remove all temporary files"
 task :clobber => [:clobber_rdoc, :clobber_rcov] do

@@ -3,13 +3,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe Win32::Screenshot::Image do
 
   before :all do
-    @title = /calculator/i
-    @calc = IO.popen("calc").pid
-    wait_for_calculator_to_open
-
-    Win32::Screenshot.window(@title) do |width, height, img|
-      @image = img
-    end
+    IO.popen("calc")
+    @calc = RAutomation::Window.new(:title => /calculator/i).pid
+    @image = Win32::Screenshot::Take.new(:window, :pid => @calc)
   end
 
   describe "stores raw bitmap data" do
@@ -65,8 +61,8 @@ describe Win32::Screenshot::Image do
   end
 
   after :all do
-    pid = Win32::Screenshot::Util.window_process_id(Win32::Screenshot::Util.window_hwnd(@title))
-    system("taskkill /PID #{pid} > nul")
+    # kill in a jruby friendly way
+    system("taskkill /PID #{@calc} > nul")
   end
 
 end

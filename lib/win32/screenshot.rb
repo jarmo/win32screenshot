@@ -3,11 +3,12 @@ require 'stringio' # this is needed for MiniMagick for now
 require 'mini_magick'
 require 'rautomation'
 
-# environment variables for bundled MiniMagick
-ENV["PATH"] = "#{File.dirname(__FILE__) + "/../../ext"};#{ENV["PATH"]}"
-ENV["MAGICK_CODER_MODULE_PATH"] = File.dirname(__FILE__) + "/../../ext/modules/coders"
-
+require File.dirname(__FILE__) + '/screenshot/extensions/rautomation/adapter/ffi/functions'
+require File.dirname(__FILE__) + '/screenshot/extensions/rautomation/adapter/ffi/window'
 require File.dirname(__FILE__) + '/screenshot/take'
 require File.dirname(__FILE__) + '/screenshot/image'
 require File.dirname(__FILE__) + '/screenshot/bitmap_maker'
-require File.dirname(__FILE__) + '/screenshot/util'
+
+# environment variables for bundled MiniMagick
+ENV["PATH"] = "#{File.dirname(__FILE__) + "/../../ext"};#{ENV["PATH"]}"
+ENV["MAGICK_CODER_MODULE_PATH"] = File.dirname(__FILE__) + "/../../ext/modules/coders"

@@ -5,12 +5,20 @@ module Win32
       # [String] raw bitmap blob
       attr_reader :bitmap
 
+      # [String] bitmap width
+      attr_reader :width
+
+      # [String] bitmap height
+      attr_reader :height
+
       # Supported output formats
       FORMATS = %w{bmp gif jpg png}
 
       # @private
-      def initialize(blob)
+      def initialize(blob, width, height)
         @bitmap = blob
+        @width = width
+        @height = height
       end
 
       # Writes image to the disk.
