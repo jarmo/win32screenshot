@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{win32screenshot}
-  s.version = "1.0.0"
+  s.version = "1.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jarmo Pertman", "Aslak Helles\303\270y"]
-  s.date = %q{2010-12-17}
-  s.description = %q{Capture Screenshots on Windows with Ruby}
+  s.date = %q{2010-12-18}
+  s.description = %q{Capture Screenshots on Windows with Ruby to bmp, gif, jpg or png formats!}
   s.email = ["jarmo.p@gmail.com", "aslak.hellesoy@gmail.com"]
   s.extra_rdoc_files = [
     "LICENSE",
@@ -46,8 +46,6 @@ Gem::Specification.new do |s|
      "ext/vcomp100.dll",
      "lib/win32/screenshot.rb",
      "lib/win32/screenshot/bitmap_maker.rb",
-     "lib/win32/screenshot/extensions/rautomation/adapter/ffi/functions.rb",
-     "lib/win32/screenshot/extensions/rautomation/adapter/ffi/window.rb",
      "lib/win32/screenshot/image.rb",
      "lib/win32/screenshot/take.rb",
      "spec/spec_helper.rb",
@@ -59,7 +57,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--main", "README.rdoc"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Capture Screenshots on Windows with Ruby}
+  s.summary = %q{Capture Screenshots on Windows with Ruby to bmp, gif, jpg or png formats!}
   s.test_files = [
     "spec/spec_helper.rb",
      "spec/win32/screenshot/image_spec.rb",
@@ -73,18 +71,18 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<ffi>, ["~> 0"])
       s.add_runtime_dependency(%q<mini_magick>, ["~> 3.1"])
-      s.add_runtime_dependency(%q<rautomation>, ["~> 0.2"])
+      s.add_runtime_dependency(%q<rautomation>, ["~> 0.3"])
       s.add_development_dependency(%q<rspec>, ["~> 2.3"])
     else
       s.add_dependency(%q<ffi>, ["~> 0"])
       s.add_dependency(%q<mini_magick>, ["~> 3.1"])
-      s.add_dependency(%q<rautomation>, ["~> 0.2"])
+      s.add_dependency(%q<rautomation>, ["~> 0.3"])
       s.add_dependency(%q<rspec>, ["~> 2.3"])
     end
   else
     s.add_dependency(%q<ffi>, ["~> 0"])
     s.add_dependency(%q<mini_magick>, ["~> 3.1"])
-    s.add_dependency(%q<rautomation>, ["~> 0.2"])
+    s.add_dependency(%q<rautomation>, ["~> 0.3"])
     s.add_dependency(%q<rspec>, ["~> 2.3"])
   end
 end
