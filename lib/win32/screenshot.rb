@@ -1,10 +1,9 @@
 require 'ffi'
 require 'stringio' # this is needed for MiniMagick for now
 require 'mini_magick'
+ENV["RAUTOMATION_ADAPTER"] = "ffi" # make sure that Ffi adapter is always used for RAutomation
 require 'rautomation'
 
-require File.dirname(__FILE__) + '/screenshot/extensions/rautomation/adapter/ffi/functions'
-require File.dirname(__FILE__) + '/screenshot/extensions/rautomation/adapter/ffi/window'
 require File.dirname(__FILE__) + '/screenshot/take'
 require File.dirname(__FILE__) + '/screenshot/image'
 require File.dirname(__FILE__) + '/screenshot/bitmap_maker'
