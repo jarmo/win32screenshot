@@ -1,3 +1,7 @@
+= 1.0.1 2010-12-18
+* Increased RAutomation dependency for version 0.3.0 due to it's new Window#child method
+* Making sure that RAutomation's Ffi adapter is always used
+
 = 1.0.0 2010-12-17 - The New Beginning
 * Bundling all necessary libraries/binaries with the gem - ImageMagick and RMagick are no more needed, finally!
 * Using MiniMagick to save images to gif, jpg and png format
