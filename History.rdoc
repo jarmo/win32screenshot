@@ -1,3 +1,6 @@
+= 1.0.2 2011-01-20
+* Fixed to work with RAutomation version 0.4
+
 = 1.0.1 2010-12-18
 * Increased RAutomation dependency for version 0.3.0 due to it's new Window#child method
 * Making sure that RAutomation's Ffi adapter is always used
