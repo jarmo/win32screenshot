@@ -15,7 +15,7 @@ begin
 
     gem.rdoc_options = ["--main", "README.rdoc"]
 
-    gem.add_dependency "ffi", "~>0"
+    gem.add_dependency "ffi", "~>1"
     gem.add_dependency "mini_magick", "~>3.1"
     gem.add_dependency "rautomation", "~>0.4"
 
