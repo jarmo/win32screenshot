@@ -1,5 +1,4 @@
 require 'ffi'
-require 'stringio' # this is needed for MiniMagick for now
 require 'mini_magick'
 ENV["RAUTOMATION_ADAPTER"] = "win_ffi" # make sure that WinFfi adapter is always used for RAutomation
 require 'rautomation'
