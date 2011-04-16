@@ -63,9 +63,12 @@ module Win32
         def window(opts)
           area = {:area => opts.delete(:area)}
           win = opts[:rautomation] || RAutomation::Window.new(opts)
-          timeout = Time.now + 60
+          timeout = Time.now + 10
           until win.active?
-            raise "Failed to set window into focus, unable to take a screenshot!" if Time.now >= timeout
+            if Time.now >= timeout
+              Kernel.warn "Failed to set window '#{win.locators}' into focus!"
+              break
+            end
             win.activate
           end
           take_screenshot(win.hwnd, opts.merge(area || {}))
