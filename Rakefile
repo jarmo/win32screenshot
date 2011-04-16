@@ -19,7 +19,7 @@ begin
     gem.add_dependency "mini_magick", "~>3.2"
     gem.add_dependency "rautomation", "~>0.5"
 
-    gem.add_development_dependency "rspec", "~>2.3"
+    gem.add_development_dependency "rspec", "~>2.5"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError

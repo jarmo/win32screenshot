@@ -1,3 +1,6 @@
+= 1.0.3 2011-04-17
+* Try to take a screenshot of the window even if the activation of that window fails.
+
 = 1.0.2 2011-01-20
 * Fixed to work with RAutomation version 0.4
 
