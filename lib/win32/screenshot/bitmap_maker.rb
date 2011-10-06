@@ -91,11 +91,11 @@ module Win32
 
 	        if whole
             BitmapMaker.window_rect(hwnd.to_i, rect)
-            left, top, width, height = rect.unpack('L4')
-            return [width-left, height-top]
+            left, top, width, height = rect.unpack('l4')
+            return [width+1-left, height+1-top]
           else
             BitmapMaker.client_rect(hwnd.to_i, rect)
-            _, _, width, height = rect.unpack('L4')
+            _, _, width, height = rect.unpack('l4')
             return [width, height]
           end
         end
