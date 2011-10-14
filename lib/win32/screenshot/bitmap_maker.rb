@@ -41,20 +41,16 @@ module Win32
         attach_function :release_dc, :ReleaseDC,
                         [:long, :long], :int
 
-        def capture_all(hwnd, whole=false)
-          width, height = dimensions_for(hwnd, whole)
-          capture_area(hwnd, 0, 0, width, height, whole)
+        def capture_all(hwnd)
+          width, height = dimensions_for(hwnd)
+          capture_area(hwnd, 0, 0, width, height)
         end
 
         SRCCOPY = 0x00CC0020
         DIB_RGB_COLORS = 0
 
-        def capture_area(hwnd, x1, y1, x2, y2, whole=false)
-          if whole
-            hScreenDC = window_dc(hwnd)
-          else
-            hScreenDC = dc(hwnd)
-          end
+        def capture_area(hwnd, x1, y1, x2, y2)
+          hScreenDC = window_dc(hwnd)
           w = x2-x1
           h = y2-y1
 
@@ -86,18 +82,11 @@ module Win32
           release_dc(0, hScreenDC)
         end
 
-        def dimensions_for(hwnd, whole=false)
-          rect = [0, 0, 0, 0].pack('L4')
-
-	        if whole
-            BitmapMaker.window_rect(hwnd.to_i, rect)
-            left, top, width, height = rect.unpack('l4')
-            return [width+1-left, height+1-top]
-          else
-            BitmapMaker.client_rect(hwnd.to_i, rect)
-            _, _, width, height = rect.unpack('l4')
-            return [width, height]
-          end
+        def dimensions_for(hwnd)
+          rect = [0, 0, 0, 0].pack('l4')
+          BitmapMaker.window_rect(hwnd.to_i, rect)
+          left, top, width, height = rect.unpack('l4')
+          return [width+1-left, height+1-top]
         end
 
       end

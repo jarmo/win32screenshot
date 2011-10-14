@@ -40,7 +40,7 @@ module Win32
         #   taking screenshots of the child windows
         # @return [Image] the {Image} of the specified object
         def of(what, opts = {})
-          valid_whats = [:foreground, :whole_foreground, :desktop, :window, :whole_window]
+          valid_whats = [:foreground, :desktop, :window]
           raise "It is not possible to take a screenshot of '#{what}', possible values are #{valid_whats.join(", ")}" unless valid_whats.include?(what)
 
           self.send(what, opts)
@@ -50,13 +50,9 @@ module Win32
 
         private
 
-        def whole_foreground(opts)
-          foreground(opts, true)
-        end
-
-        def foreground(opts, whole=false)
+        def foreground(opts)
           hwnd = BitmapMaker.foreground_window
-          take_screenshot(hwnd, opts, whole)
+          take_screenshot(hwnd, opts)
         end
 
         def desktop(opts)
@@ -64,11 +60,7 @@ module Win32
           take_screenshot(hwnd, opts)
         end
 
-        def whole_window(opts)
-          window( opts, true )
-        end
-
-        def window(opts, whole=false)
+        def window(opts)
           area = {:area => opts.delete(:area)}
           win = opts[:rautomation] || RAutomation::Window.new(opts)
           timeout = Time.now + 10
@@ -79,19 +71,19 @@ module Win32
             end
             win.activate
           end
-          take_screenshot(win.hwnd, opts.merge(area || {}), whole)
+          take_screenshot(win.hwnd, opts.merge(area || {}))
         end
 
-        def take_screenshot(hwnd, opts, whole=false)
+        def take_screenshot(hwnd, opts)
           if opts[:area]
-            validate_coordinates(hwnd, *opts[:area], whole)
-            BitmapMaker.capture_area(hwnd, *opts[:area], whole)
+            validate_coordinates(hwnd, *opts[:area])
+            BitmapMaker.capture_area(hwnd, *opts[:area])
           else
-            BitmapMaker.capture_all(hwnd, whole)
+            BitmapMaker.capture_all(hwnd)
           end
         end
 
-        def validate_coordinates(hwnd, x1, y1, x2, y2, whole)
+        def validate_coordinates(hwnd, x1, y1, x2, y2)
           specified_coordinates = "x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}"
           if [x1, y1, x2, y2].any? {|c| c < 0}
             raise "specified coordinates (#{specified_coordinates}) are invalid - cannot be negative!"
@@ -101,7 +93,7 @@ module Win32
             raise "specified coordinates (#{specified_coordinates}) are invalid - cannot be x1 >= x2 or y1 >= y2!"
           end
 
-          max_width, max_height = BitmapMaker.dimensions_for(hwnd, whole)
+          max_width, max_height = BitmapMaker.dimensions_for(hwnd)
           if x2 > max_width || y2 > max_height
             raise "specified coordinates (#{specified_coordinates}) are invalid - maximum x2: #{max_width} and y2: #{max_height}!"
           end
