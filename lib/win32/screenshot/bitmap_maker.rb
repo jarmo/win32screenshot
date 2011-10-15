@@ -10,6 +10,8 @@ module Win32
         ffi_convention :stdcall
 
         # user32.dll
+        attach_function :window_dc, :GetWindowDC,
+                        [:long], :long
         attach_function :dc, :GetDC,
                         [:long], :long
         attach_function :client_rect, :GetClientRect,
@@ -48,7 +50,7 @@ module Win32
         DIB_RGB_COLORS = 0
 
         def capture_area(hwnd, x1, y1, x2, y2)
-          hScreenDC = dc(hwnd)
+          hScreenDC = window_dc(hwnd)
           w = x2-x1
           h = y2-y1
 
@@ -81,10 +83,10 @@ module Win32
         end
 
         def dimensions_for(hwnd)
-          rect = [0, 0, 0, 0].pack('L4')
-          BitmapMaker.client_rect(hwnd.to_i, rect)
-          _, _, width, height = rect.unpack('L4')
-          [width, height]
+          rect = [0, 0, 0, 0].pack('l4')
+          BitmapMaker.window_rect(hwnd.to_i, rect)
+          left, top, width, height = rect.unpack('l4')
+          return [width+1-left, height+1-top]
         end
 
       end
