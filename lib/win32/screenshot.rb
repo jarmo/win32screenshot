@@ -3,6 +3,7 @@ require 'mini_magick'
 ENV["RAUTOMATION_ADAPTER"] = "win_ffi" # make sure that WinFfi adapter is always used for RAutomation
 require 'rautomation'
 
+require File.dirname(__FILE__) + '/screenshot/version'
 require File.dirname(__FILE__) + '/screenshot/take'
 require File.dirname(__FILE__) + '/screenshot/image'
 require File.dirname(__FILE__) + '/screenshot/bitmap_maker'
