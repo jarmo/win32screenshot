@@ -1,7 +1,5 @@
 coverage
-rdoc
 pkg
-.idea
 spec/tmp
 .yardoc/
 doc/

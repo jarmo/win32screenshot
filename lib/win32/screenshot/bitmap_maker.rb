@@ -86,7 +86,7 @@ module Win32
           rect = [0, 0, 0, 0].pack('l4')
           BitmapMaker.window_rect(hwnd.to_i, rect)
           left, top, width, height = rect.unpack('l4')
-          return [width+1-left, height+1-top]
+          return [width + 1 - left, height + 1 - top]
         end
 
       end
