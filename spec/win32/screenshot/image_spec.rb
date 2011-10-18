@@ -26,6 +26,7 @@ describe Win32::Screenshot::Image do
     context "saving to the png format" do
       it "#write" do
         file_path = @temp_dir + '/image.png'
+        @image.write(file_path)
         expect {@image.write(file_path)}.to_not raise_exception
         File.open(file_path, "rb") {|io| io.read}[0..3].should == "\211PNG"
       end
