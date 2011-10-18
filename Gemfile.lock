@@ -3,7 +3,7 @@ PATH
   specs:
     win32screenshot (1.0.6)
       ffi (~> 1.0)
-      mini_magick (~> 3.2.0)
+      mini_magick (~> 3.2.1)
       rake (= 0.8.7)
       rautomation (~> 0.6.3)
       rspec (~> 2.5)

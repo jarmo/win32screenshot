@@ -1,5 +1,7 @@
 = 1.0.6 2011-10-16
 * Screenshot will be taken of the whole window instead of client area - e.g. with title bar and such.
+* Added :context option to specify which area to take screenshot of - possible values are :window or :client
+    Win32::Screenshot::Take.of(:window, :hwnd => 1234, :context => :client)
 
 = 1.0.5 2011-08-18
 * Minor output message change

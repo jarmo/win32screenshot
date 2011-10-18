@@ -26,6 +26,9 @@ Capture Screenshots on Windows with Ruby to bmp, gif, jpg or png formats!
   # Take a screenshot of the window with the specified handle
   Win32::Screenshot::Take.of(:window, :hwnd => 123456).write("image.gif")
 
+  # Take a screenshot of the window's client area (e.g. without title bar) with the specified handle
+  Win32::Screenshot::Take.of(:window, :hwnd => 123456, :context => :client)
+
   # Take a screenshot of the child window with the specified internal class name
   Win32::Screenshot::Take.of(:rautomation, RAutomation::Window.new(:hwnd => 123456).
                             child(:class => "Internet Explorer_Server")).write("image.png")

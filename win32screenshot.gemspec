@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency("rake", "0.8.7")
   s.add_dependency("ffi", "~> 1.0")
-  s.add_dependency("mini_magick", "~> 3.2.0")
+  s.add_dependency("mini_magick", "~> 3.2.1")
   s.add_dependency("rautomation", "~> 0.6.3")
   s.add_dependency("rspec", "~> 2.5")
 end
