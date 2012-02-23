@@ -70,7 +70,7 @@ module Win32
           timeout = Time.now + 10
           until win.active?
             if Time.now >= timeout
-              Kernel.warn "Failed to set window '#{win.locators.inspect}' into focus!"
+              Kernel.warn "[WARN] Failed to set window '#{win.locators.inspect}' into focus for taking the screenshot"
               break
             end
             win.activate
