@@ -15,7 +15,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   
   s.add_dependency("ffi", "~> 1.0")
-  s.add_dependency("mini_magick", "~> 3.2.1")
-  s.add_dependency("rautomation", "~> 0.7.0")
+  s.add_dependency("mini_magick", "~> 3.2")
+  s.add_dependency("rautomation", "~> 0.7")
   s.add_development_dependency("rspec", "~> 2.5")
+  s.add_development_dependency("yard")
 end

@@ -27,7 +27,7 @@ describe Win32::Screenshot::Image do
       it "#write" do
         file_path = @temp_dir + '/image.png'
         expect {@image.write(file_path)}.to_not raise_exception
-        File.open(file_path, "rb") {|io| io.read}[0..3].should == "\211PNG"
+        File.open(file_path, "rb") {|io| io.read}[0..3].should == "\211PNG".force_encoding(Encoding::ASCII_8BIT)
       end
     end
 
