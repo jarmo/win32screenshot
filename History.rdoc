@@ -1,5 +1,8 @@
+= 1.0.8 2013-03-09
+* Loosen up dependencies
+
 = 1.0.7 2012-02-23
-* bumped RAutomation dependency
+* Bump RAutomation dependency
 
 = 1.0.6 2011-10-16
 * Screenshot will be taken of the whole window instead of client area - e.g. with title bar and such.
