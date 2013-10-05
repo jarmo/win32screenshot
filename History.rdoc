@@ -1,3 +1,6 @@
+= 1.0.9 2013-10-05
+* Set mini_magick 3.5.0 as a dependency because 3.6.0 is broken.
+
 = 1.0.8 2013-03-09
 * Loosen up dependencies
 
