@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    win32screenshot (1.0.9)
+    win32screenshot (1.0.10)
       ffi (~> 1.0)
       mini_magick (~> 3.5.0)
       rautomation (~> 0.7)
