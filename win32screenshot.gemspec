@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- spec/*`.split("\n")
   s.require_paths = ["lib"]
+  s.license = "MIT"
   
   s.add_dependency("ffi", "~> 1.0")
   s.add_dependency("mini_magick", "~> 3.5.0")
