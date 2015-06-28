@@ -1,7 +1,6 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'win32/screenshot'
-require 'rubygems'
 require 'rspec'
 require 'fileutils'
 

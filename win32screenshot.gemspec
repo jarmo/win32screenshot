@@ -15,8 +15,8 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.license = "MIT"
   
-  s.add_dependency("ffi", "~> 1.0")
-  s.add_dependency("mini_magick", "~> 3.5.0")
+  s.add_dependency("ffi", "~> 1.9.0")
+  s.add_dependency("mini_magick", "~> 4.0.0")
   s.add_dependency("rautomation", "~> 0.7")
   
   s.add_development_dependency("rspec", "~> 2.5")

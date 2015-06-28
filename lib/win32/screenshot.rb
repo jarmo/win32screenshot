@@ -7,6 +7,5 @@ require File.dirname(__FILE__) + '/screenshot/take'
 require File.dirname(__FILE__) + '/screenshot/image'
 require File.dirname(__FILE__) + '/screenshot/bitmap_maker'
 
-# environment variables for bundled MiniMagick
-ENV["PATH"] = "#{File.dirname(__FILE__) + "/../../ext"};#{ENV["PATH"]}"
-ENV["MAGICK_CODER_MODULE_PATH"] = File.dirname(__FILE__) + "/../../ext/modules/coders"
+# add bundled ImageMagick into path
+ENV["PATH"] = "#{File.dirname(__FILE__) + "/../../ext/ImageMagick-6.9.1-6-portable-Q16-x86"};#{ENV["PATH"]}"
