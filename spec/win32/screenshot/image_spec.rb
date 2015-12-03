@@ -58,6 +58,16 @@ describe Win32::Screenshot::Image do
         File.size(file_path).should == content.size
       end
     end
+
+    context "allowing to overwrite existing files when desired" do
+      it "#write!" do
+        file_path = @temp_dir + '/invalid-image.png'
+        content = "invalid content"
+        File.open(file_path, "w") {|io| io.write content}
+        @image.write!(file_path)
+        File.size(file_path).should != content.size
+      end
+    end    
   end
 
   after :all do
