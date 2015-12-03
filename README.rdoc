@@ -20,7 +20,7 @@ Capture Screenshots on Windows with Ruby to bmp, gif, jpg or png formats!
   # Take a screenshot of the foreground
   Win32::Screenshot::Take.of(:foreground).write("image.png")
   
-  # Takea  screenshot of the foreground, and writing over previous image if it exists
+  # Take a screenshot of the foreground, and writing over previous image if it exists
   Win32::Screenshot::Take.of(:foreground).write!("image.png")
 
   # Take a screenshot of the specified window's top-left corner's area
