@@ -27,17 +27,11 @@ module Win32
       # @raise [RuntimeError] when _file_path_ is not with the supported output {FORMATS} extension.
       def write(file_path)
         raise "File already exists: #{file_path}!" if File.exists? file_path
-        write_file file_path
+        write! file_path
       end
       
       #Writes image to disk, writing over existing copy if it exists.
       def write!(file_path)
-        write_file file_path
-      end
-      
-      private
-      
-      def write_file(file_path)
         ext = File.extname(file_path)[1..-1]
         raise "File '#{file_path}' has to have one of the following extensions: #{FORMATS.join(", ")}" unless ext && FORMATS.include?(ext.downcase)
 
