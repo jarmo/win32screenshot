@@ -3,9 +3,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe Win32::Screenshot::Image do
 
   before :all do
-    IO.popen("calc")
-    @calc = RAutomation::Window.new(:title => /calculator/i).pid
-    @image = Win32::Screenshot::Take.of(:window, :pid => @calc)
+    IO.popen("notepad")
+    @notepad = RAutomation::Window.new(:title => /notepad/i).pid
+    @image = Win32::Screenshot::Take.of(:window, :pid => @notepad)
   end
 
   describe "stores raw bitmap data" do
@@ -61,18 +61,18 @@ describe Win32::Screenshot::Image do
 
     context "allowing to overwrite existing files when desired" do
       it "#write!" do
-        file_path = @temp_dir + '/invalid-image.png'
-        content = "invalid content"
+        file_path = @temp_dir + '/overwritten-image.png'
+        content = "content"
         File.open(file_path, "w") {|io| io.write content}
         @image.write!(file_path)
-        File.size(file_path).should != content.size
+        File.size(file_path).should_not eq(content.size)
       end
     end    
   end
 
   after :all do
     # kill in a jruby friendly way
-    system("taskkill /PID #{@calc} > nul")
+    system("taskkill /PID #{@notepad} > nul")
   end
 
 end
