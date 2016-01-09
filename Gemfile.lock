@@ -3,15 +3,16 @@ PATH
   specs:
     win32screenshot (2.0.0)
       ffi (~> 1.9.0)
-      mini_magick (~> 4.0.0)
+      mini_magick (~> 4.3.0)
       rautomation (~> 0.7)
 
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.1)
-    ffi (1.9.8-x86-mingw32)
-    mini_magick (4.0.4)
+    ffi (1.9.10)
+    ffi (1.9.10-x86-mingw32)
+    mini_magick (4.3.6)
     rake (10.1.0)
     rautomation (0.17.0)
       ffi (~> 1.9.0)
@@ -36,4 +37,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.10.5
+   1.10.6
