@@ -1,4 +1,5 @@
 = 2.1.0 2016-01-09
+* Add Image#write! for overwriting images.
 * Update MiniMagick dependency.
 * Update bundled ImageMagick version to 6.9.3-0-portable-Q16-x86.
 
