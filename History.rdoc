@@ -1,3 +1,7 @@
+= 2.1.0 2016-01-09
+* Update MiniMagick dependency.
+* Update bundled ImageMagick version to 6.9.3-0-portable-Q16-x86.
+
 = 2.0.0 2015-06-28
 * Update MiniMagick dependency due to CVE-2013-2616.
 * Update bundled ImageMagick version to 6.9.1-6-Q16-x86.
