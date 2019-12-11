@@ -2,20 +2,20 @@ PATH
   remote: .
   specs:
     win32screenshot (2.1.0)
-      ffi (~> 1.9.0)
+      ffi (~> 1.11.0)
       mini_magick (~> 4.3.0)
-      rautomation (~> 0.7)
+      rautomation (~> 1.0.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.1)
-    ffi (1.9.10)
-    ffi (1.9.10-x86-mingw32)
+    ffi (1.11.3)
+    ffi (1.11.3-x86-mingw32)
     mini_magick (4.3.6)
     rake (10.1.0)
-    rautomation (0.17.0)
-      ffi (~> 1.9.0)
+    rautomation (1.0.0)
+      ffi (~> 1.11.0)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -37,4 +37,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.15.4
+   1.17.2
