@@ -1,3 +1,8 @@
+# 3.0.0 2019-12-11
+*   Use RAutomation 1.0.0 as its dependency to be able to use newer ffi.
+*   Update bundled ImageMagick to 7.0.9-8.
+*   Update MiniMagick dependency.
+
 # 2.1.0 2016-01-09
 *   Add Image#write! for overwriting images.
 *   Update MiniMagick dependency.
