@@ -3,7 +3,7 @@ PATH
   specs:
     win32screenshot (2.1.0)
       ffi (~> 1.11.0)
-      mini_magick (~> 4.3.0)
+      mini_magick (~> 4.9)
       rautomation (~> 1.0.0)
 
 GEM
@@ -12,7 +12,7 @@ GEM
     diff-lcs (1.2.1)
     ffi (1.11.3)
     ffi (1.11.3-x86-mingw32)
-    mini_magick (4.3.6)
+    mini_magick (4.9.5)
     rake (10.1.0)
     rautomation (1.0.0)
       ffi (~> 1.11.0)
