@@ -138,8 +138,8 @@ describe Win32::Screenshot::Take do
   it "doesn't allow to capture an area of the window with too big coordinates" do
     window = RAutomation::Window.new(:pid => @notepad)
     expected_width, expected_height = Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window)
-    expect {Win32::Screenshot::Take.of(:window, :pid => @notepad, :area => [0, 0, 10, 1000])}.
-            to raise_exception("specified coordinates (x1: 0, y1: 0, x2: 10, y2: 1000) are invalid - maximum x2: #{expected_width} and y2: #{expected_height}!")
+    expect {Win32::Screenshot::Take.of(:window, :pid => @notepad, :area => [0, 0, 10, 100000])}.
+            to raise_exception("specified coordinates (x1: 0, y1: 0, x2: 10, y2: 100000) are invalid - maximum x2: #{expected_width} and y2: #{expected_height}!")
   end
 
   after :all do
