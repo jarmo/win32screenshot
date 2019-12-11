@@ -10,6 +10,7 @@ end
 
 task :build => :spec
 task :default => :spec
+task "release:source_control_push" => :spec
 
 require 'yard'
 YARD::Rake::YardocTask.new
