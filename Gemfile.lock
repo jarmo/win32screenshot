@@ -10,9 +10,10 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.2.1)
+    ffi (1.11.3)
     ffi (1.11.3-x86-mingw32)
     mini_magick (4.9.5)
-    rake (10.1.0)
+    rake (13.0.1)
     rautomation (1.0.0)
       ffi (~> 1.11.0)
     rspec (2.13.0)
