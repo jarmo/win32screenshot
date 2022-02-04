@@ -15,11 +15,11 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.license = "MIT"
   
-  s.add_dependency("ffi", "~> 1.11.0")
+  s.add_dependency("ffi", "~> 1.15.0")
   s.add_dependency("mini_magick", "~> 4.9")
-  s.add_dependency("rautomation", "~> 1.0.0")
+  s.add_dependency("rautomation", "~> 1.1.0")
   
-  s.add_development_dependency("rspec", "~> 2.5")
+  s.add_development_dependency("rspec", "~> 3.10")
   s.add_development_dependency("yard")
   s.add_development_dependency("rake")
 end
