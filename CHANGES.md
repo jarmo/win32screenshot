@@ -1,3 +1,6 @@
+# 3.1.0 2022-02-05
+*   Update dependencies
+
 # 3.0.0 2019-12-11
 *   Use RAutomation 1.0.0 as its dependency to be able to use newer ffi.
 *   Update bundled ImageMagick to 7.0.9-8.
