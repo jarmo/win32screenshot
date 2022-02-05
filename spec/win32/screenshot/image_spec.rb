@@ -10,7 +10,7 @@ describe Win32::Screenshot::Image do
 
   describe "stores raw bitmap data" do
     it "#bitmap" do
-      @image.bitmap[0..1].should == 'BM'
+      expect(@image.bitmap[0..1]).to eq('BM')
     end
   end
 
@@ -19,7 +19,7 @@ describe Win32::Screenshot::Image do
       it "#write" do
         file_path = @temp_dir + '/image.bmp'
         expect {@image.write(file_path)}.to_not raise_exception
-        File.open(file_path, "rb") {|io| io.read}[0..1].should == "BM"
+        expect(File.open(file_path, "rb") {|io| io.read}[0..1]).to eq("BM")
       end
     end
 
@@ -27,7 +27,7 @@ describe Win32::Screenshot::Image do
       it "#write" do
         file_path = @temp_dir + '/image.png'
         expect {@image.write(file_path)}.to_not raise_exception
-        File.open(file_path, "rb") {|io| io.read}[0..3].should == "\211PNG".force_encoding(Encoding::ASCII_8BIT)
+        expect(File.open(file_path, "rb") {|io| io.read}[0..3]).to eq("\211PNG".force_encoding(Encoding::ASCII_8BIT))
       end
     end
 
@@ -36,7 +36,7 @@ describe Win32::Screenshot::Image do
         file_path = @temp_dir + '/image.notknown'
         expect {@image.write(file_path)}.
                 to raise_exception("File '#{file_path}' has to have one of the following extensions: #{Win32::Screenshot::Image::FORMATS.join(", ")}")
-        File.should_not exist(file_path)
+        expect(File.exist?(file_path)).to eq(false)
       end
     end
 
@@ -45,7 +45,7 @@ describe Win32::Screenshot::Image do
         file_path = @temp_dir + '/image'
         expect {@image.write(file_path)}.
                 to raise_exception("File '#{file_path}' has to have one of the following extensions: #{Win32::Screenshot::Image::FORMATS.join(", ")}")
-        File.should_not exist(file_path)
+        expect(File.exist?(file_path)).to eq(false)
       end
     end
 
@@ -55,7 +55,7 @@ describe Win32::Screenshot::Image do
         content = "invalid content"
         File.open(file_path, "w") {|io| io.write content}
         expect {@image.write(file_path)}.to raise_exception("File already exists: #{file_path}!")
-        File.size(file_path).should == content.size
+        expect(File.size(file_path)).to eq(content.size)
       end
     end
 
@@ -65,7 +65,7 @@ describe Win32::Screenshot::Image do
         content = "content"
         File.open(file_path, "w") {|io| io.write content}
         @image.write!(file_path)
-        File.size(file_path).should_not eq(content.size)
+        expect(File.size(file_path)).to_not eq(content.size)
       end
     end    
   end
