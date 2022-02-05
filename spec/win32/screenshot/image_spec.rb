@@ -36,7 +36,7 @@ describe Win32::Screenshot::Image do
         file_path = @temp_dir + '/image.notknown'
         expect {@image.write(file_path)}.
                 to raise_exception("File '#{file_path}' has to have one of the following extensions: #{Win32::Screenshot::Image::FORMATS.join(", ")}")
-        expect(File).to_not eq(exist(file_path))
+        expect(File.exist?(file_path)).to eq(false)
       end
     end
 
@@ -45,7 +45,7 @@ describe Win32::Screenshot::Image do
         file_path = @temp_dir + '/image'
         expect {@image.write(file_path)}.
                 to raise_exception("File '#{file_path}' has to have one of the following extensions: #{Win32::Screenshot::Image::FORMATS.join(", ")}")
-        expect(File).to_not eq(exist(file_path))
+        expect(File.exist?(file_path)).to eq(false)
       end
     end
 
