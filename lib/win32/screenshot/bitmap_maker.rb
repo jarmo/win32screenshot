@@ -30,8 +30,6 @@ module Win32
                         [:long, :int, :int], :long
         attach_function :select_object, :SelectObject,
                         [:long, :long], :long
-        attach_function :bit_blt, :BitBlt,
-                        [:long, :int, :int, :int, :int, :long, :int, :int, :long], :bool
         attach_function :di_bits, :GetDIBits,
                         [:long, :long, :int, :int, :pointer, :pointer, :int], :int
         attach_function :delete_object, :DeleteObject,
@@ -40,14 +38,17 @@ module Win32
                         [:long], :bool
         attach_function :release_dc, :ReleaseDC,
                         [:long, :long], :int
+        attach_function :print_window, :PrintWindow,
+                        [:long, :long, :int], :bool
+
 
         def capture_all(hwnd, context)
           width, height = dimensions_for(hwnd, context)
           capture_area(hwnd, context, 0, 0, width, height)
         end
 
-        SRCCOPY = 0x00CC0020
         DIB_RGB_COLORS = 0
+        PW_RENDERFULLCONTENT = 0x00000002
 
         def capture_area(hwnd, context, x1, y1, x2, y2)
           hScreenDC = send("#{context}_dc", hwnd)
@@ -57,7 +58,8 @@ module Win32
           hmemDC = create_compatible_dc(hScreenDC)
           hmemBM = create_compatible_bitmap(hScreenDC, w, h)
           select_object(hmemDC, hmemBM)
-          bit_blt(hmemDC, 0, 0, w, h, hScreenDC, x1, y1, SRCCOPY)
+          print_window(hwnd, hmemDC, PW_RENDERFULLCONTENT)
+
           bitmap_size = w * h * 3 + w % 4 * h
           lpvpxldata = FFI::MemoryPointer.new(bitmap_size)
 
@@ -93,7 +95,6 @@ module Win32
             [width, height]
           end
         end
-
       end
     end
   end
