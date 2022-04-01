@@ -22,6 +22,8 @@ module Win32
                         [], :long
         attach_function :desktop_window, :GetDesktopWindow,
                         [], :long
+        attach_function :get_system_metrics, :GetSystemMetrics,
+                        [:int], :int
 
         # gdi32.dll
         attach_function :create_compatible_dc, :CreateCompatibleDC,
@@ -40,33 +42,57 @@ module Win32
                         [:long, :long], :int
         attach_function :print_window, :PrintWindow,
                         [:long, :long, :int], :bool
-
-
-        def capture_all(hwnd, context)
-          width, height = dimensions_for(hwnd, context)
-          capture_area(hwnd, context, 0, 0, width, height)
-        end
+        attach_function :bit_blt, :BitBlt,
+                        [:long, :int, :int, :int, :int, :long, :int, :int, :long], :bool
 
         DIB_RGB_COLORS = 0
         PW_RENDERFULLCONTENT = 0x00000002
+        SRCCOPY = 0x00CC0020
 
-        def capture_area(hwnd, context, x1, y1, x2, y2)
-          hScreenDC = send("#{context}_dc", hwnd)
-          w = x2-x1
-          h = y2-y1
+        SM_XVIRTUALSCREEN = 76
+        SM_YVIRTUALSCREEN = 77
+        SM_CXVIRTUALSCREEN = 78
+        SM_CYVIRTUALSCREEN = 79
 
-          hmemDC = create_compatible_dc(hScreenDC)
-          hmemBM = create_compatible_bitmap(hScreenDC, w, h)
-          select_object(hmemDC, hmemBM)
+        def capture_all(hwnd, context)
+          width, height = dimensions_for(hwnd, context)
+          capture_area(hwnd, context, width, height)
+        end
+
+        def capture_area(hwnd, context, width, height)
+          hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
           print_window(hwnd, hmemDC, PW_RENDERFULLCONTENT)
+          create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
+        end
 
-          bitmap_size = w * h * 3 + w % 4 * h
+        def capture_screen(hwnd, context, *area)
+          if area.empty?
+            left, top, width, height = desktop_dimensions
+          else
+            left, top, width, height = area
+          end
+
+          hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
+          bit_blt(hmemDC, 0, 0, width, height, hScreenDC, left, top, SRCCOPY)
+          create_bitmap(hwnd, hScreenDC, hmemDC, hmemBM, width, height)
+        end
+
+        def prepare_object(hwnd, context, width, height)
+          hScreenDC = send("#{context}_dc", hwnd)
+          hmemDC = create_compatible_dc(hScreenDC)
+          hmemBM = create_compatible_bitmap(hScreenDC, width, height)
+          select_object(hmemDC, hmemBM)
+          [hScreenDC, hmemDC, hmemBM]
+        end
+
+        def create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
+          bitmap_size = width * height * 3 + width % 4 * height
           lpvpxldata = FFI::MemoryPointer.new(bitmap_size)
 
           # Bitmap header
           # http://www.fortunecity.com/skyscraper/windows/364/bmpffrmt.html
-          bmInfo = [40, w, h, 1, 24, 0, 0, 0, 0, 0, 0, 0].pack('L3S2L6')
-          di_bits(hmemDC, hmemBM, 0, h, lpvpxldata, bmInfo, DIB_RGB_COLORS)
+          bmInfo = [40, width, height, 1, 24, 0, 0, 0, 0, 0, 0, 0].pack('L3S2L6')
+          di_bits(hmemDC, hmemBM, 0, height, lpvpxldata, bmInfo, DIB_RGB_COLORS)
 
           bmFileHeader = [
                   19778,
@@ -76,12 +102,32 @@ module Win32
                   54
           ].pack('SLSSL')
 
-          Image.new(bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size), w, h)
+          Image.new(bmFileHeader + bmInfo + lpvpxldata.read_string(bitmap_size), width, height)
         ensure
           lpvpxldata.free
           delete_object(hmemBM)
           delete_dc(hmemDC)
           release_dc(0, hScreenDC)
+        end
+
+        def desktop_dimensions
+          [desktop_left, desktop_top, desktop_width, desktop_height]
+        end
+
+        def desktop_left
+          get_system_metrics(SM_XVIRTUALSCREEN)
+        end
+
+        def desktop_top
+          get_system_metrics(SM_YVIRTUALSCREEN)
+        end
+
+        def desktop_width
+          get_system_metrics(SM_CXVIRTUALSCREEN)
+        end
+
+        def desktop_height
+          get_system_metrics(SM_CYVIRTUALSCREEN)
         end
 
         def dimensions_for(hwnd, context)

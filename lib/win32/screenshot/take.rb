@@ -60,7 +60,11 @@ module Win32
 
         def desktop(opts)
           hwnd = BitmapMaker.desktop_window
-          take_screenshot(hwnd, opts)
+          if opts[:area]
+            screenshot_area(hwnd, opts, false)
+          else
+            BitmapMaker.capture_screen(hwnd, opts[:context])
+          end
         end
 
         def window(opts)
@@ -80,10 +84,18 @@ module Win32
 
         def take_screenshot(hwnd, opts)
           if opts[:area]
-            validate_coordinates(hwnd, opts[:context], *opts[:area])
-            BitmapMaker.capture_area(hwnd, opts[:context], *opts[:area])
+            screenshot_area(hwnd, opts)
           else
             BitmapMaker.capture_all(hwnd, opts[:context])
+          end
+        end
+
+        def screenshot_area(hwnd, opts, window = true)
+          validate_coordinates(hwnd, opts[:context], *opts[:area])
+          if window
+            BitmapMaker.capture_area(hwnd, opts[:context], *opts[:area])
+          else
+            BitmapMaker.capture_screen(hwnd, opts[:context], *opts[:area])
           end
         end
 
