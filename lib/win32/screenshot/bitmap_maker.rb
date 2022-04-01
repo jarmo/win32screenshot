@@ -22,6 +22,8 @@ module Win32
                         [], :long
         attach_function :desktop_window, :GetDesktopWindow,
                         [], :long
+        attach_function :print_window, :PrintWindow,
+                        [:long, :long, :int], :bool
         attach_function :get_system_metrics, :GetSystemMetrics,
                         [:int], :int
 
@@ -40,8 +42,6 @@ module Win32
                         [:long], :bool
         attach_function :release_dc, :ReleaseDC,
                         [:long, :long], :int
-        attach_function :print_window, :PrintWindow,
-                        [:long, :long, :int], :bool
         attach_function :bit_blt, :BitBlt,
                         [:long, :int, :int, :int, :int, :long, :int, :int, :long], :bool
 
