@@ -19,8 +19,8 @@ describe Win32::Screenshot::Take do
   it "captures an area of the foreground" do
     image = Win32::Screenshot::Take.of(:foreground, :area => [30, 30, 100, 150])
     save_and_verify_image(image, 'foreground_area')
-    expect(image.width).to eq(70)
-    expect(image.height).to eq(120)
+    expect(image.width).to eq(100)
+    expect(image.height).to eq(150)
   end
 
   it "doesn't allow to capture an area of the foreground with invalid coordinates" do
@@ -31,15 +31,14 @@ describe Win32::Screenshot::Take do
   it "captures the desktop" do
     image = Win32::Screenshot::Take.of(:desktop)
     save_and_verify_image(image, 'desktop')
-    hwnd = Win32::Screenshot::BitmapMaker.desktop_window
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(hwnd, :window))
+    expect([image.width, image.height]).to eq([Win32::Screenshot::BitmapMaker.desktop_width, Win32::Screenshot::BitmapMaker.desktop_height])
   end
 
   it "captures an area of the desktop" do
     image = Win32::Screenshot::Take.of(:desktop, :area => [30, 30, 100, 150])
     save_and_verify_image(image, 'desktop_area')
-    expect(image.width).to eq(70)
-    expect(image.height).to eq(120)
+    expect(image.width).to eq(100)
+    expect(image.height).to eq(150)
   end
 
   it "doesn't allow to capture an area of the desktop with invalid coordinates" do
@@ -93,8 +92,8 @@ describe Win32::Screenshot::Take do
   it "captures an area of the window" do
     image = Win32::Screenshot::Take.of(:window, :pid => @notepad, :area => [30, 30, 100, 150])
     save_and_verify_image(image, 'notepad_area')
-    expect(image.width).to eq(70)
-    expect(image.height).to eq(120)
+    expect(image.width).to eq(100)
+    expect(image.height).to eq(150)
   end
 
   it "captures by the RAutomation::Window" do
