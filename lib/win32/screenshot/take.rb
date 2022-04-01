@@ -93,7 +93,7 @@ module Win32
         def screenshot_area(hwnd, opts, window = true)
           validate_coordinates(hwnd, opts[:context], *opts[:area])
           if window
-            BitmapMaker.capture_area(hwnd, opts[:context], *opts[:area])
+            BitmapMaker.capture_area(hwnd, opts[:context], width: opts[:area][2], height: opts[:area][3])
           else
             BitmapMaker.capture_screen(hwnd, opts[:context], *opts[:area])
           end

@@ -56,10 +56,10 @@ module Win32
 
         def capture_all(hwnd, context)
           width, height = dimensions_for(hwnd, context)
-          capture_area(hwnd, context, width, height)
+          capture_area(hwnd, context, width: width, height: height)
         end
 
-        def capture_area(hwnd, context, width, height)
+        def capture_area(hwnd, context, width:, height:)
           hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
           print_window(hwnd, hmemDC, PW_RENDERFULLCONTENT)
           create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
@@ -74,7 +74,7 @@ module Win32
 
           hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
           bit_blt(hmemDC, 0, 0, width, height, hScreenDC, left, top, SRCCOPY)
-          create_bitmap(hwnd, hScreenDC, hmemDC, hmemBM, width, height)
+          create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
         end
 
         def prepare_object(hwnd, context, width, height)
@@ -111,23 +111,12 @@ module Win32
         end
 
         def desktop_dimensions
-          [desktop_left, desktop_top, desktop_width, desktop_height]
-        end
-
-        def desktop_left
-          get_system_metrics(SM_XVIRTUALSCREEN)
-        end
-
-        def desktop_top
-          get_system_metrics(SM_YVIRTUALSCREEN)
-        end
-
-        def desktop_width
-          get_system_metrics(SM_CXVIRTUALSCREEN)
-        end
-
-        def desktop_height
-          get_system_metrics(SM_CYVIRTUALSCREEN)
+          Win32::Screenshot::Desktop.new(
+               get_system_metrics(SM_XVIRTUALSCREEN),
+               get_system_metrics(SM_YVIRTUALSCREEN),
+               get_system_metrics(SM_CXVIRTUALSCREEN),
+               get_system_metrics(SM_CYVIRTUALSCREEN)
+          ).dimensions
         end
 
         def dimensions_for(hwnd, context)
