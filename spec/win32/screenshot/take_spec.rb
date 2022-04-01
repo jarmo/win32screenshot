@@ -30,8 +30,11 @@ describe Win32::Screenshot::Take do
 
   it "captures the desktop" do
     image = Win32::Screenshot::Take.of(:desktop)
+    desktop_width = Win32::Screenshot::BitmapMaker::desktop_dimensions[2]
+    desktop_height = Win32::Screenshot::BitmapMaker::desktop_dimensions[3]
     save_and_verify_image(image, 'desktop')
-    expect([image.width, image.height]).to eq([Win32::Screenshot::BitmapMaker::desktop_dimensions[2], Win32::Screenshot::BitmapMaker::desktop_dimensions[3]])
+
+    expect([image.width, image.height]).to eq([desktop_width, desktop_height])
   end
 
   it "captures an area of the desktop" do
