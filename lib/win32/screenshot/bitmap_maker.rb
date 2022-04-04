@@ -65,12 +65,8 @@ module Win32
           create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
         end
 
-        def capture_screen(hwnd, context, *area)
-          if area.empty?
-            left, top, width, height = desktop.dimensions
-          else
-            left, top, width, height = area
-          end
+        def capture_screen(hwnd, context, area = desktop.dimensions)
+          left, top, width, height = area
 
           hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
           bit_blt(hmemDC, 0, 0, width, height, hScreenDC, left, top, SRCCOPY)

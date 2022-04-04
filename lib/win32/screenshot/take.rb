@@ -96,7 +96,7 @@ module Win32
             width, height = opts[:area].last(2)
             BitmapMaker.capture_area(hwnd, opts[:context], width, height)
           else
-            BitmapMaker.capture_screen(hwnd, opts[:context], *opts[:area])
+            BitmapMaker.capture_screen(hwnd, opts[:context], opts[:area])
           end
         end
 
