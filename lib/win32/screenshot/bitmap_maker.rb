@@ -56,10 +56,10 @@ module Win32
 
         def capture_all(hwnd, context)
           width, height = dimensions_for(hwnd, context)
-          capture_area(hwnd, context, width: width, height: height)
+          capture_area(hwnd, context, width, height)
         end
 
-        def capture_area(hwnd, context, width:, height:)
+        def capture_area(hwnd, context, width, height)
           hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
           print_window(hwnd, hmemDC, PW_RENDERFULLCONTENT)
           create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
@@ -67,7 +67,7 @@ module Win32
 
         def capture_screen(hwnd, context, *area)
           if area.empty?
-            left, top, width, height = desktop_dimensions
+            left, top, width, height = desktop.dimensions
           else
             left, top, width, height = area
           end
@@ -110,13 +110,13 @@ module Win32
           release_dc(0, hScreenDC)
         end
 
-        def desktop_dimensions
+        def desktop
           Win32::Screenshot::Desktop.new(
                get_system_metrics(SM_XVIRTUALSCREEN),
                get_system_metrics(SM_YVIRTUALSCREEN),
                get_system_metrics(SM_CXVIRTUALSCREEN),
                get_system_metrics(SM_CYVIRTUALSCREEN)
-          ).dimensions
+          )
         end
 
         def dimensions_for(hwnd, context)
