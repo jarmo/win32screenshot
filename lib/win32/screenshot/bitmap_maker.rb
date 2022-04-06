@@ -54,19 +54,16 @@ module Win32
         SM_CXVIRTUALSCREEN = 78
         SM_CYVIRTUALSCREEN = 79
 
-        def capture_all(hwnd, context)
+        def capture_window(hwnd, context)
           width, height = dimensions_for(hwnd, context)
-          capture_area(hwnd, context, width, height)
-        end
 
-        def capture_area(hwnd, context, width, height)
           hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
           print_window(hwnd, hmemDC, PW_RENDERFULLCONTENT)
           create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
         end
 
-        def capture_screen(hwnd, context, area = desktop.dimensions)
-          left, top, width, height = area
+        def capture_screen(hwnd, context)
+          left, top, width, height = desktop.dimensions
 
           hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
           bit_blt(hmemDC, 0, 0, width, height, hScreenDC, left, top, SRCCOPY)

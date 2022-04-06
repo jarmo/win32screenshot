@@ -55,20 +55,15 @@ module Win32
 
         def foreground(opts)
           hwnd = BitmapMaker.foreground_window
-          take_screenshot(hwnd, opts)
+          BitmapMaker.capture_window(hwnd, opts[:context])
         end
 
         def desktop(opts)
           hwnd = BitmapMaker.desktop_window
-          if opts[:area]
-            screenshot_area(hwnd, opts, false)
-          else
-            BitmapMaker.capture_screen(hwnd, opts[:context])
-          end
+          BitmapMaker.capture_screen(hwnd, opts[:context])
         end
 
         def window(opts)
-          area = {:area => opts.delete(:area)}
           context = {:context => opts.delete(:context)}
           win = opts[:rautomation] || RAutomation::Window.new(opts)
           timeout = Time.now + 10
@@ -79,43 +74,8 @@ module Win32
             end
             win.activate
           end
-          take_screenshot(win.hwnd, opts.merge(context).merge(area || {}))
+          BitmapMaker.capture_window(win.hwnd, context[:context])
         end
-
-        def take_screenshot(hwnd, opts)
-          if opts[:area]
-            screenshot_area(hwnd, opts)
-          else
-            BitmapMaker.capture_all(hwnd, opts[:context])
-          end
-        end
-
-        def screenshot_area(hwnd, opts, window = true)
-          validate_coordinates(hwnd, opts[:context], *opts[:area])
-          if window
-            width, height = opts[:area].last(2)
-            BitmapMaker.capture_area(hwnd, opts[:context], width, height)
-          else
-            BitmapMaker.capture_screen(hwnd, opts[:context], opts[:area])
-          end
-        end
-
-        def validate_coordinates(hwnd, context, x1, y1, x2, y2)
-          specified_coordinates = "x1: #{x1}, y1: #{y1}, x2: #{x2}, y2: #{y2}"
-          if [x1, y1, x2, y2].any? {|c| c < 0}
-            raise "specified coordinates (#{specified_coordinates}) are invalid - cannot be negative!"
-          end
-
-          if x1 >= x2 || y1 >= y2
-            raise "specified coordinates (#{specified_coordinates}) are invalid - cannot be x1 >= x2 or y1 >= y2!"
-          end
-
-          max_width, max_height = BitmapMaker.dimensions_for(hwnd, context)
-          if x2 > max_width || y2 > max_height
-            raise "specified coordinates (#{specified_coordinates}) are invalid - maximum x2: #{max_width} and y2: #{max_height}!"
-          end
-        end
-
       end
     end
   end
