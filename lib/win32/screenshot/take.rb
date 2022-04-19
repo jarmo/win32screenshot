@@ -4,7 +4,7 @@ module Win32
     class Take
 
       class << self
-        # Takes a screenshot of the specified object or it's area.
+        # Takes a screenshot of the specified object.
         #
         # @example Take a screenshot of the window with the specified title
         #   Win32::Screenshot::Take.of(:window, :title => "Windows Internet Explorer")
@@ -12,8 +12,8 @@ module Win32
         # @example Take a screenshot of the foreground
         #   Win32::Screenshot::Take.of(:foreground)
         #
-        # @example Take a screenshot of the specified window's top-left corner's area
-        #   Win32::Screenshot::Take.of(:window, :title => /internet/i, :area => [10, 10, 20, 20])
+        # @example Take a screenshot of the desktop
+        #   Win32::Screenshot::Take.of(:desktop)
         #
         # @example Take a screenshot of the window with the specified handle
         #   Win32::Screenshot::Take.of(:window, :hwnd => 123456)
@@ -26,7 +26,7 @@ module Win32
         #
         # @param [Symbol] what the type of the object to take a screenshot of,
         #   possible values are _:foreground_, _:desktop_ and _:window_.
-        # @param [Hash] opts options are optional for specifying an _:area_ and/or _:context_ to take a screenshot.
+        # @param [Hash] opts options are optional for specifying _:context_ to take a screenshot.
         #   It is possible to specify as many options as are needed for searching for the unique window.
         #   By default the first window with matching identifiers will be taken screenshot of.
         #   It is possible to use in addition to other options a 0-based _:index_ option to search for other windows if multiple
