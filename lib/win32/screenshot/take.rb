@@ -31,7 +31,6 @@ module Win32
         #   By default the first window with matching identifiers will be taken screenshot of.
         #   It is possible to use in addition to other options a 0-based _:index_ option to search for other windows if multiple
         #   windows match the specified criteria.
-        # @option opts [String, Symbol] :context Context to take a screenshot of. Can be _:window_ or _:client_. Defaults to _:window_
         # @option opts [String, Regexp] :title Title of the window
         # @option opts [String, Regexp] :text Visible text of the window
         # @option opts [String, Regexp] :class Internal class name of the window
@@ -46,7 +45,7 @@ module Win32
           valid_whats = [:foreground, :desktop, :window]
           raise "It is not possible to take a screenshot of '#{what}', possible values are #{valid_whats.join(", ")}" unless valid_whats.include?(what)
 
-          self.send(what, {:context => :window}.merge(opts))
+          self.send(what, opts)
         end
 
         alias_method :new, :of
@@ -55,16 +54,15 @@ module Win32
 
         def foreground(opts)
           hwnd = BitmapMaker.foreground_window
-          BitmapMaker.capture_window(hwnd, opts[:context])
+          BitmapMaker.capture_window(hwnd)
         end
 
         def desktop(opts)
           hwnd = BitmapMaker.desktop_window
-          BitmapMaker.capture_screen(hwnd, opts[:context])
+          BitmapMaker.capture_screen(hwnd)
         end
 
         def window(opts)
-          context = {:context => opts.delete(:context)}
           win = opts[:rautomation] || RAutomation::Window.new(opts)
           timeout = Time.now + 10
           until win.active?
@@ -74,7 +72,7 @@ module Win32
             end
             win.activate
           end
-          BitmapMaker.capture_window(win.hwnd, context[:context])
+          BitmapMaker.capture_window(win.hwnd)
         end
       end
     end

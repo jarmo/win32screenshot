@@ -26,6 +26,9 @@ module Win32
                         [:long, :long, :int], :bool
         attach_function :get_system_metrics, :GetSystemMetrics,
                         [:int], :int
+        attach_function :get_class_name, :GetClassNameA,
+                        [:int, :pointer, :int], :int
+
 
         # gdi32.dll
         attach_function :create_compatible_dc, :CreateCompatibleDC,
@@ -54,24 +57,24 @@ module Win32
         SM_CXVIRTUALSCREEN = 78
         SM_CYVIRTUALSCREEN = 79
 
-        def capture_window(hwnd, context)
-          width, height = dimensions_for(hwnd, context)
+        def capture_window(hwnd)
+          width, height = dimensions_for(hwnd)
 
-          hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
+          hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, width, height)
           print_window(hwnd, hmemDC, PW_RENDERFULLCONTENT)
           create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
         end
 
-        def capture_screen(hwnd, context)
+        def capture_screen(hwnd)
           left, top, width, height = desktop.dimensions
 
-          hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, context, width, height)
+          hScreenDC, hmemDC, hmemBM = prepare_object(hwnd, width, height)
           bit_blt(hmemDC, 0, 0, width, height, hScreenDC, left, top, SRCCOPY)
           create_bitmap(hScreenDC, hmemDC, hmemBM, width, height)
         end
 
-        def prepare_object(hwnd, context, width, height)
-          hScreenDC = send("#{context}_dc", hwnd)
+        def prepare_object(hwnd, width, height)
+          hScreenDC = window_dc(hwnd)
           hmemDC = create_compatible_dc(hScreenDC)
           hmemBM = create_compatible_bitmap(hScreenDC, width, height)
           select_object(hmemDC, hmemBM)
@@ -112,16 +115,18 @@ module Win32
           )
         end
 
-        def dimensions_for(hwnd, context)
+        def class_name_for(hwnd)
+          buf = "\0" * 255
+          nof_chars = get_class_name(hwnd, buf, buf.length)
+          buf[0..nof_chars]
+        end
+
+        def dimensions_for(hwnd)
           rect = [0, 0, 0, 0].pack('l4')
-          BitmapMaker.send("#{context}_rect", hwnd.to_i, rect)
+          window_rect(hwnd.to_i, rect)
           left, top, width, height = rect.unpack('l4')
 
-          if context == :window
-            [width + 1 - left, height + 1 - top]
-          else
-            [width, height]
-          end
+          [width - left, height - top]
         end
       end
     end
