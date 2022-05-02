@@ -18,9 +18,10 @@ describe Win32::Screenshot::Take do
 
   it "captures the desktop" do
     image = Win32::Screenshot::Take.of(:desktop)
+    desktop_dimensions = Win32::Screenshot::BitmapMaker::desktop
     save_and_verify_image(image, 'desktop')
 
-    expect([image.width, image.height]).to eq([Win32::Screenshot::BitmapMaker::desktop.width, Win32::Screenshot::BitmapMaker::desktop.height])
+    expect([image.width, image.height]).to eq([desktop_dimensions.width, desktop_dimensions.height])
   end
 
   it "captures a maximized window" do
