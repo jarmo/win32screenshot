@@ -13,7 +13,7 @@ describe Win32::Screenshot::Take do
     image = Win32::Screenshot::Take.of(:foreground)
     save_and_verify_image(image, 'foreground')
     hwnd = Win32::Screenshot::BitmapMaker.foreground_window
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(hwnd, :window))
+    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(hwnd))
   end
 
   it "captures the desktop" do
@@ -24,12 +24,19 @@ describe Win32::Screenshot::Take do
     expect([image.width, image.height]).to eq([desktop_dimensions.width, desktop_dimensions.height])
   end
 
+  it "captures a window" do
+    image = Win32::Screenshot::Take.of(:window, :pid => @notepad)
+    save_and_verify_image(image, 'notepad_context_window')
+    window = RAutomation::Window.new(:pid => @notepad)
+    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
+  end
+
   it "captures a maximized window" do
     window = RAutomation::Window.new(:pid => @iexplore)
     window.maximize
     image = Win32::Screenshot::Take.of(:window, :pid => @iexplore)
     save_and_verify_image(image, 'iexplore_max')
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window))
+    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
   end
 
   it "captures a minimized window" do
@@ -37,7 +44,7 @@ describe Win32::Screenshot::Take do
     window.minimize
     image = Win32::Screenshot::Take.of(:window, :pid => @notepad)
     save_and_verify_image(image, 'notepad_min')
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window))
+    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
   end
 
   it "captures a small window" do
@@ -50,44 +57,29 @@ describe Win32::Screenshot::Take do
     # screenshot doesn't include titlebar and the size
     # varies between different themes and Windows versions
     window = RAutomation::Window.new(:pid => @iexplore)
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window))
-  end
-
-  it "captures a window context of the window" do
-    image = Win32::Screenshot::Take.of(:window, :pid => @notepad, :context => :window)
-    save_and_verify_image(image, 'notepad_context_window')
-    window = RAutomation::Window.new(:pid => @notepad)
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window))
-  end
-
-  it "captures a client context of the window" do
-    image = Win32::Screenshot::Take.of(:window, :pid => @notepad, :context => :client)
-    save_and_verify_image(image, 'notepad_context_client')
-    window = RAutomation::Window.new(:pid => @notepad)
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :client))
+    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
   end
 
   it "captures by the RAutomation::Window" do
     window = RAutomation::Window.new(:pid => @notepad)
     image = Win32::Screenshot::Take.of(:window, :rautomation => window)
     save_and_verify_image(image, 'notepad_rautomation')
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window))
+    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
   end
 
-  it "captures a child windows" do
+  it "captures a child window" do
     window = RAutomation::Window.new(:pid => @iexplore).child(:class => "Internet Explorer_Server")
     image = Win32::Screenshot::Take.of(:window, :rautomation => window)
     save_and_verify_image(image, 'iexplore_child')
-    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window))
+    expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
   end
 
-  it "captures a whole window if window size is specified as coordinates" do
-    window = RAutomation::Window.new(:pid => @notepad)
-    expected_width, expected_height = Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd, :window)
-    image = Win32::Screenshot::Take.of(:window, :rautomation => window, :area => [0, 0, expected_width, expected_height])
-    save_and_verify_image(image, 'notepad_area_full_window')
-    expect(image.width).to eq(expected_width)
-    expect(image.height).to eq(expected_height)
+  it "captures a window using internal class name as identifier" do
+     window = RAutomation::Window.new(:pid => @notepad)
+     class_name = Win32::Screenshot::BitmapMaker.class_name_for(window.hwnd)
+     image = Win32::Screenshot::Take.of(:window, :class => class_name)
+     save_and_verify_image(image, 'notepad_class_name')
+     expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
   end
 
   after :all do
