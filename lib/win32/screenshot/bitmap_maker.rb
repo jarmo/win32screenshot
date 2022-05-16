@@ -12,10 +12,6 @@ module Win32
         # user32.dll
         attach_function :window_dc, :GetWindowDC,
                         [:long], :long
-        attach_function :client_dc, :GetDC,
-                        [:long], :long
-        attach_function :client_rect, :GetClientRect,
-                        [:long, :pointer], :bool
         attach_function :window_rect, :GetWindowRect,
                         [:long, :pointer], :bool
         attach_function :foreground_window, :GetForegroundWindow,
@@ -26,9 +22,6 @@ module Win32
                         [:long, :long, :int], :bool
         attach_function :get_system_metrics, :GetSystemMetrics,
                         [:int], :int
-        attach_function :get_class_name, :GetClassNameA,
-                        [:int, :pointer, :int], :int
-
 
         # gdi32.dll
         attach_function :create_compatible_dc, :CreateCompatibleDC,
@@ -113,12 +106,6 @@ module Win32
                get_system_metrics(SM_CXVIRTUALSCREEN),
                get_system_metrics(SM_CYVIRTUALSCREEN)
           )
-        end
-
-        def class_name_for(hwnd)
-          buf = "\0" * 255
-          nof_chars = get_class_name(hwnd, buf, buf.length)
-          buf[0..nof_chars]
         end
 
         def dimensions_for(hwnd)

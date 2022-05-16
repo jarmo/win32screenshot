@@ -33,7 +33,6 @@ module Win32
         #   windows match the specified criteria.
         # @option opts [String, Regexp] :title Title of the window
         # @option opts [String, Regexp] :text Visible text of the window
-        # @option opts [String, Regexp] :class Internal class name of the window
         # @option opts [String, Fixnum] :hwnd Window handle in decimal format
         # @option opts [String, Fixnum] :pid Window process ID (PID)
         # @option opts [String, Fixnum] :index 0-based index to specify n-th window to take a screenshot of if

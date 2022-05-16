@@ -74,14 +74,6 @@ describe Win32::Screenshot::Take do
     expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
   end
 
-  it "captures a window using internal class name as identifier" do
-     window = RAutomation::Window.new(:pid => @notepad)
-     class_name = Win32::Screenshot::BitmapMaker.class_name_for(window.hwnd)
-     image = Win32::Screenshot::Take.of(:window, :class => class_name)
-     save_and_verify_image(image, 'notepad_class_name')
-     expect([image.width, image.height]).to eq(Win32::Screenshot::BitmapMaker.dimensions_for(window.hwnd))
-  end
-
   after :all do
     [@iexplore, @notepad].each do |pid|
       # kill them in a jruby friendly way
