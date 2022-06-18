@@ -18,20 +18,20 @@ Capture Screenshots on Windows with Ruby to bmp, gif, jpg or png formats!
     # Take a screenshot of the window with the specified title
     Win32::Screenshot::Take.of(:window, title: "Windows Internet Explorer").write("image.bmp")
 
-    # Take a screenshot of the foreground
+    # Take a screenshot of the whole desktop area, including all monitors if multiple are connected
+    Win32::Screenshot::Take.of(:desktop).write("image.png")
+
+    # Take a screenshot of the foreground window
     Win32::Screenshot::Take.of(:foreground).write("image.png")
 
-    # Take a screenshot of the foreground, and writing over previous image if it exists
+    # Take a screenshot of the foreground window, and writing over previous image if it exists
     Win32::Screenshot::Take.of(:foreground).write!("image.png")
 
-    # Take a screenshot of the specified window's top-left corner's area
-    Win32::Screenshot::Take.of(:window, title: /internet/i, area: [10, 10, 20, 20]).write("image.jpg")
+    # Take a screenshot of the specified window with title matching the regular expression
+    Win32::Screenshot::Take.of(:window, title: /internet/i).write("image.jpg")
 
     # Take a screenshot of the window with the specified handle
     Win32::Screenshot::Take.of(:window, hwnd: 123456).write("image.gif")
-
-    # Take a screenshot of the window's client area (e.g. without title bar) with the specified handle
-    Win32::Screenshot::Take.of(:window, hwnd: 123456, context: :client)
 
     # Take a screenshot of the child window with the specified internal class name
     Win32::Screenshot::Take.of(:rautomation, RAutomation::Window.new(hwnd: 123456).
