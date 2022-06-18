@@ -1,3 +1,11 @@
+# 4.0.0 2022-06-18
+* Add support for taking screenchots of non-native Windows (e.g. Google Chrome).
+* When taking screenshot of `:desktop` then all monitors will be included if they exist.
+* Remove `:area` option - instead whole windows will be screenshotted (for browser windows, the whole page will be saved).
+* Remove `context: :client` option.
+
+Changes done by @bensandland via PR #34.
+
 # 3.1.0 2022-02-05
 *   Update dependencies
 
