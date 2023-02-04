@@ -20,7 +20,7 @@ module SpecHelper
                   [:long, :long, :int, :int, :int, :int, :int], :bool
   
   def save_and_verify_image(img, file=nil)
-    FileUtils.mkdir @temp_dir unless File.exists?(@temp_dir)
+    FileUtils.mkdir @temp_dir unless File.exist?(@temp_dir)
     file_name = File.join @temp_dir, "#{file}.bmp"
     img.write file_name
     expect(img.bitmap[0..1]).to eq('BM')
