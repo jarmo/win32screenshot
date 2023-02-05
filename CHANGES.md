@@ -1,3 +1,7 @@
+# 4.1.0 2023-02-05
+* Add support for Ruby 3.2 (by @kaiwaredaikon009 via PR #36)
+
+
 # 4.0.0 2022-06-18
 * Add support for taking screenchots of non-native Windows (e.g. Google Chrome).
 * When taking screenshot of `:desktop` then all monitors will be included if they exist.
@@ -6,13 +10,16 @@
 
 Changes done by @bensandland via PR #34.
 
+
 # 3.1.0 2022-02-05
 *   Update dependencies
+
 
 # 3.0.0 2019-12-11
 *   Use RAutomation 1.0.0 as its dependency to be able to use newer ffi.
 *   Update bundled ImageMagick to 7.0.9-8.
 *   Update MiniMagick dependency.
+
 
 # 2.1.0 2016-01-09
 *   Add Image#write! for overwriting images.
