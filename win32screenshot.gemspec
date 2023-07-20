@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency("ffi", "~> 1.15.0")
   s.add_dependency("mini_magick", "~> 4.9")
-  s.add_dependency("rautomation", "~> 2.1")
+  s.add_dependency("rautomation", "~> 2.0")
   
   s.add_development_dependency("rspec", "~> 3.10")
   s.add_development_dependency("yard")
