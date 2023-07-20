@@ -4,16 +4,19 @@ PATH
     win32screenshot (4.1.0)
       ffi (~> 1.15.0)
       mini_magick (~> 4.9)
-      rautomation (~> 1.1.0)
+      rautomation (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.5.0)
+    ffi (1.15.5-x64-mingw32)
     ffi (1.15.5-x86-mingw32)
     mini_magick (4.11.0)
     rake (13.0.6)
-    rautomation (1.1.0)
+    rautomation (2.0.1-x64-mingw32)
+      ffi (~> 1.15.0)
+    rautomation (2.0.1-x86-mingw32)
       ffi (~> 1.15.0)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
@@ -33,6 +36,7 @@ GEM
       webrick (~> 1.7.0)
 
 PLATFORMS
+  x64-mingw32
   x86-mingw32
 
 DEPENDENCIES
