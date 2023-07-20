@@ -1,3 +1,6 @@
+# 5.0.0 2023-07-20
+* Add support for 64-bit Ruby (by @bensandland via PR #37)
+
 # 4.1.0 2023-02-05
 * Add support for Ruby 3.2 (by @kaiwaredaikon009 via PR #36)
 
