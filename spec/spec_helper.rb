@@ -5,20 +5,6 @@ require 'rspec'
 require 'fileutils'
 
 module SpecHelper
-  HWND_TOPMOST = -1
-  HWND_NOTOPMOST = -2
-  SWP_NOSIZE = 1
-  SWP_NOMOVE = 2
-  SWP_SHOWWINDOW = 40
-
-  extend FFI::Library
-  ffi_lib 'user32'
-  ffi_convention :stdcall
-
-  # user32.dll
-  attach_function :set_window_pos, :SetWindowPos,
-                  [:long, :long, :int, :int, :int, :int, :int], :bool
-  
   def save_and_verify_image(img, file=nil)
     FileUtils.mkdir @temp_dir unless File.exist?(@temp_dir)
     file_name = File.join @temp_dir, "#{file}.bmp"
@@ -27,16 +13,8 @@ module SpecHelper
   end
 
   def resize title
-    hwnd = RAutomation::Window.new(:title => title).hwnd
-    set_window_pos(hwnd,
-                   HWND_TOPMOST,
-                   0, 0, 150, 238,
-                   SWP_NOMOVE)
-    set_window_pos(hwnd,
-                   HWND_NOTOPMOST,
-                   0, 0, 0, 0,
-                   SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE)
-    sleep 1
+    window = RAutomation::Window.new(title: title)
+    window.move(left: 0, top: 0, width: 150, height: 238)
   end
 end
 
